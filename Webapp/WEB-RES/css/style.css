@@ -1,0 +1,205 @@
+@CHARSET "UTF-8";
+
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td {
+	margin:0;
+	padding:0
+}
+
+img {
+	vertical-align: middle;
+}
+
+.title {
+	font-family: "微软雅黑", "黑体", "宋体", "klavika-web-1", "klavika-web-2", sans-serif;
+	font-size: 2em;
+	color: #66AB16;
+	padding: 0 0 0.4em 2.2em;
+}
+
+.t1-icon {
+	background: url(../js/extjs4.x/app/resources/images/class-m.png) no-repeat 0 -5px;
+}
+
+.t2-icon {
+	background: url(../js/extjs4.x/app/resources/images/singleton-m.png) no-repeat 0 -5px;
+}
+
+.icon-cls {
+	background: url(../imgs/icons.png) no-repeat -3px -84px !important;
+}
+
+/*子系统*/
+.icon-sub-system {
+	background: url(../imgs/icons.png) no-repeat -3px -219px !important;
+}
+
+/*模块组*/
+.icon-module-group {
+	background: url(../imgs/icons.png) no-repeat -3px -57px !important;
+}
+
+/*模块*/
+.icon-module-app {
+	background: url(../imgs/icons.png) no-repeat -3px -111px !important;
+}
+
+/*操作功能*/
+.icon-module-function {
+	background: url(../imgs/icons.png) no-repeat -3px -84px !important;
+}
+
+/*角色根*/
+.icon-role-root {
+	background: url(../imgs/icons.png) no-repeat -3px -219px !important;
+}
+
+/*角色组*/
+.icon-role-group {
+	background: url(../imgs/icons.png) no-repeat -3px -57px !important;
+}
+
+/*角色节点*/
+.icon-role-leaf {
+	background: url(../imgs/icons.png) no-repeat -3px -111px !important;
+}
+
+/*城市组*/
+.icon-city-group {
+	background: url(../imgs/catalog.png) no-repeat !important;
+}
+
+/*城市节点*/
+.icon-city-leaf {
+	background: url(../imgs/icons.png) no-repeat -3px -165px !important;
+}
+
+/*枚举*/
+.icon-enums {
+	background: url(../imgs/icons.png) no-repeat -3px -84px !important;
+}
+
+/*主页*/
+.icon-home {
+	background: url(../imgs/hotel.png) no-repeat !important;
+}
+
+/*用户*/
+.icon-user {
+	background: url(../imgs/user.png) no-repeat !important;
+}
+/*添加*/
+.icon-add {
+	background: url(../imgs/add.png) no-repeat !important;
+}
+/*编辑*/
+.icon-edit {
+	background: url(../imgs/edit.png) no-repeat !important;
+}
+/*删除*/
+.icon-del {
+	background: url(../imgs/delete.png) no-repeat !important;
+}
+/*保存*/
+.icon-save {
+	background: url(../imgs/save.png) no-repeat !important;
+}
+/*设置*/
+.icon-set {
+	background: url(../imgs/cog.png) no-repeat !important;
+}
+/*停止*/
+.icon-stop {
+	background: url(../imgs/stop.png) no-repeat !important;
+}
+/*向上*/
+.icon-up {
+	background: url(../imgs/up.png) no-repeat !important;
+}
+/*向下*/
+.icon-down {
+	background: url(../imgs/down.png) no-repeat !important;
+}
+/*查询*/
+.icon-search {
+	background: url(../imgs/search.png) no-repeat !important;
+}
+/*帮助*/
+.icon-help {
+	background: url(../imgs/help.png) no-repeat !important;
+}
+/*打印*/
+.icon-print {
+	background: url(../imgs/print.png) no-repeat !important;
+}
+/*提取*/
+.icon-hand {
+	background: url(../imgs/hand.png) no-repeat !important;
+}
+/*导出*/
+.icon-export {
+	background: url(../imgs/export.png) no-repeat !important;
+}
+/*解绑*/
+.icon-remove {
+	background: url(../imgs/remove.png) no-repeat !important;
+}
+/*核对*/
+.icon-check {
+	background: url(../imgs/accept.png) no-repeat !important;
+}
+/*收货*/
+.icon-receive {
+	background: url(../imgs/receive.png) no-repeat !important;
+}
+/*统计*/
+.icon-statistics {
+	background: url(../imgs/statistics.png) no-repeat !important;
+}
+/*锁定*/
+.icon-lock {
+	background: url(../imgs/lock.png) no-repeat !important;
+}
+/*报警*/
+.icon-alarm {
+	background: url(../imgs/alarm.png) no-repeat !important;
+}
+/*取消*/
+.icon-cancel {
+	background: url(../imgs/cancel.png) no-repeat !important;
+}
+/*查看*/
+.icon-view {
+	background: url(../imgs/checkininfo.png) no-repeat !important;
+}
+/*还原*/
+.icon-redo {
+	background: url(../imgs/redo.png) no-repeat !important;
+}
+/*拆分*/
+.icon-split {
+	background: url(../imgs/split.png) no-repeat !important;
+}
+
+/*---------------------------------------------------------------以下是对extjs样式的优化----------------------------------------------------------------*/
+
+/*在火狐下字体过小补丁样式*/
+.x-btn-default-small .x-btn-inner,.x-btn-default-medium .x-btn-inner,.x-btn-default-large .x-btn-inner,.x-btn-default-toolbar-small .x-btn-inner,.x-btn-default-toolbar-medium .x-btn-inner,.x-btn-default-toolbar-large .x-btn-inner,.x-menu-item-text,.x-html-editor-tb .x-font-select,.x-panel-header-default,.x-panel-header-text-default,.x-panel-header-default-framed,.x-tip-header,.x-tip-body,.x-form-invalid-tip-body,.x-tip-header-text,.x-progress-text,.x-toolbar,.x-toolbar .x-form-item-label,.x-toolbar .x-toolbar-text,.x-window-header-text-default,.x-tab-bar,.x-tab button,.x-grid-rowbody,.x-grid-row .x-grid-cell,.x-grid-group-title,.x-grid-row-editor .x-form-field,.x-grid-row-editor .x-form-display-field,.x-form-invalid-under,.x-fieldset-header,.x-column-header,.x-mask-msg div,.x-btn-group-header-text-default-framed,table.x-datepicker-inner a,.x-monthpicker-item,.x-dd-drag-ghost
+	{
+	font-size: 12px;
+}
+
+.x-tab button {
+	font-size: 13px;
+}
+
+.x-column-header {
+	text-shadow: 0 0 0 rgba(255, 255, 255, 0.3);
+}
+
+.x-panel-body-default {
+	border-color: silver;
+}
+
+.x-grid-td {
+	vertical-align: middle;
+}
