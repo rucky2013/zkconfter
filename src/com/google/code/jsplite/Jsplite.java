@@ -5,6 +5,7 @@ import com.google.code.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,39 +29,31 @@ public final class Jsplite {
      * @param response
      * @param name
      */
-    public static void inherits(String name,
-                                HttpServletRequest request, HttpServletResponse response) {
-        try {
-            //获取controller
-            Controller controller = getController(name);
+    public static void inherits(String name, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        //获取controller
+        Controller controller = getController(name);
 
-            //执行控制并获取ValueStack
-            ModelView valueStack = controller.execute(request, response);
+        //执行控制并获取ValueStack
+        ModelView valueStack = controller.execute(request, response);
 
-            //向view下发ValueStack
-            if (valueStack != null) {
-                for (Map.Entry<String, Object> value : valueStack) {
-                    request.setAttribute(value.getKey(), value.getValue());
-                }
+        //向view下发ValueStack
+        if (valueStack != null) {
+            for (Map.Entry<String, Object> value : valueStack) {
+                request.setAttribute(value.getKey(), value.getValue());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
     /**
      * 从缓存池中获取一个Controller
      */
-    private static Controller getController(String name) {
+    private static Controller getController(String name) throws ClassNotFoundException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException, InstantiationException {
         Controller controller = pool.get(name);
 
-        try {
-            if (controller == null) {
-                controller = (Controller) Class.forName(name).getConstructor().newInstance();
-                pool.put(name, controller);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (controller == null) {
+            controller = (Controller) Class.forName(name).getConstructor().newInstance();
+            pool.put(name, controller);
         }
 
         return controller;

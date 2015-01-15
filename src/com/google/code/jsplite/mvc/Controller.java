@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletResponse;
  * MVC用来向jsp指定的控制类接口
  */
 public interface Controller {
-    public ModelView execute(HttpServletRequest request,
-                             HttpServletResponse response) throws Exception;
+
+    /**
+     * 接收客户端的请求
+     */
+    public ModelView execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
+
 }
