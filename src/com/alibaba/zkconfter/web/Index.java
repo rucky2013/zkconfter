@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Index implements Controller {
 
-    private Logger logger = Logger.getLogger(this.getClass());
-
 	@Override
 	public ModelView execute(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
