@@ -5,7 +5,9 @@ import com.google.code.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,36 +29,40 @@ public final class Jsplite {
      *
      * @param request
      * @param response
-     * @param name
+     * @param bean
      */
-    public static void inherits(String name, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public static void inherits(String bean,
+                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+        //设置HTML头信息
+        request.setCharacterEncoding("utf-8");
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         //获取controller
-        Controller controller = getController(name);
+        Controller controller = pool.get(bean);
+        if (controller == null) {
+            controller = (Controller) Class.forName(bean).getConstructor().newInstance();
+            pool.put(bean, controller);
+        }
 
-        //执行控制并获取ValueStack
-        ModelView valueStack = controller.execute(request, response);
-
-        //向view下发ValueStack
-        if (valueStack != null) {
-            for (Map.Entry<String, Object> value : valueStack) {
+        //执行方法
+        String func = request.getParameter("func");
+        ModelView model = new ModelView();
+        if (func == null || func.trim().equals("")) {
+            //页面请求
+            controller.execute(request, response, model);
+            for (Map.Entry<String, Object> value : model) {
                 request.setAttribute(value.getKey(), value.getValue());
             }
+        } else {
+            //Ajax请求
+            Method method = controller.getClass().getMethod(func, HttpServletRequest.class, HttpServletResponse.class, ModelView.class);
+            method.invoke(controller, request, response, model);
+            response.getWriter().println(model);
         }
-    }
-
-    /**
-     * 从缓存池中获取一个Controller
-     */
-    private static Controller getController(String name) throws ClassNotFoundException, NoSuchMethodException,
-            IllegalAccessException, InvocationTargetException, InstantiationException {
-        Controller controller = pool.get(name);
-
-        if (controller == null) {
-            controller = (Controller) Class.forName(name).getConstructor().newInstance();
-            pool.put(name, controller);
-        }
-
-        return controller;
     }
 
 }

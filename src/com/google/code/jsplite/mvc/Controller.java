@@ -12,6 +12,6 @@ public interface Controller {
     /**
      * 接收客户端的请求
      */
-    public ModelView execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    public void execute(HttpServletRequest request, HttpServletResponse response, ModelView model) throws Exception;
 
 }

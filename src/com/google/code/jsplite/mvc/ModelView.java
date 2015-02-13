@@ -1,7 +1,10 @@
 package com.google.code.jsplite.mvc;
 
-import java.util.HashMap;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,45 +14,50 @@ import java.util.Map.Entry;
  * @author lpn
  */
 public class ModelView implements Iterable<Map.Entry<String, Object>> {
-    private Map<String, Object> stack;
+    private Map<String, Object> map;
 
     public ModelView() {
-        this.stack = new HashMap<String, Object>();
+        this.map = new LinkedHashMap<String, Object>();
     }
 
     public <T> T getObject(String attributeName) {
-        @SuppressWarnings("unchecked")
-        T value = (T) this.stack.get(attributeName);
+        T value = (T) this.map.get(attributeName);
         return value;
     }
 
     public Map<String, Object> getAllObjects() {
-        return this.stack;
+        return this.map;
     }
 
     public <T> void addObject(String attributeName, T attributeValue) {
-        stack.put(attributeName, attributeValue);
+        map.put(attributeName, attributeValue);
     }
 
 
     public void addAllObjects(Map<String, Object> map) {
-        stack.putAll(map);
+        this.map.putAll(map);
     }
 
     public Object removeObject(String attributeName) {
-        return stack.remove(attributeName);
+        return map.remove(attributeName);
     }
 
     public void removeAllObjects() {
-        stack.clear();
+        map.clear();
     }
 
     public int size() {
-        return stack.size();
+        return map.size();
     }
 
     @Override
     public Iterator<Entry<String, Object>> iterator() {
-        return this.stack.entrySet().iterator();
+        return this.map.entrySet().iterator();
     }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(map);
+    }
+
 }
