@@ -43,11 +43,11 @@ public class ZkConfter implements InitializingBean {
             zkProps.load(configLocation.getInputStream());
         }
 
-        String zkServers = zkProps.getProperty("zkconfter.zkServers", "127.0.0.1;:2181");
-        appName = zkProps.getProperty("zkconfter.appName");
-        root = zkProps.getProperty("zkconfter.configs.root");
-        includes = zkProps.getProperty("zkconfter.configs.includes");;
-        excludes = zkProps.getProperty("zkconfter.configs.excludes", "");
+        String zkServers = zkProps.getProperty(ConfigConst.ZK_SERVERS, "127.0.0.1;:2181");
+        appName = zkProps.getProperty(ConfigConst.APP_NAME);
+        root = zkProps.getProperty(ConfigConst.CONFIGS_ROOT);
+        includes = zkProps.getProperty(ConfigConst.CONFIGS_INCLUDES);
+        excludes = zkProps.getProperty(ConfigConst.CONFIGS_EXCLUDES, "");
 
         //验证配置项
         if (StringUtils.isEmpty(appName))
