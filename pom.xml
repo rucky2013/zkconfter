@@ -76,9 +76,10 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <jarName>${project.artifactId}-client-${project.version}</jarName>
+                            <jarName>${project.artifactId}-${project.version}</jarName>
                             <includes>
                                 <include>com/alibaba/zkconfter/client/**</include>
+                                <include>zkconfter.properties</include>
                             </includes>
                         </configuration>
                     </execution>
