@@ -1,10 +1,8 @@
-package com.alibaba.zkconfter.web;
+package com.google.code.zkconfter.web;
 
-import com.alibaba.zkconfter.client.ZkClient;
-import com.alibaba.zkconfter.client.ZkConfter;
+import com.google.code.zkconfter.client.ZkConfter;
 import com.google.code.jsplite.mvc.Controller;
 import com.google.code.jsplite.mvc.ModelView;
-import org.apache.zookeeper.CreateMode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

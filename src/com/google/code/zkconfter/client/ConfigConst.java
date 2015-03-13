@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client;
+package com.google.code.zkconfter.client;
 
 /**
  * Created by pinian.lpn on 2015/3/4.

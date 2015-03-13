@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client;
+package com.google.code.zkconfter.client;
 
 import org.I0Itec.zkclient.exception.ZkException;
 import org.I0Itec.zkclient.exception.ZkInterruptedException;

@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client;
+package com.google.code.zkconfter.client;
 
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
@@ -27,6 +27,7 @@ public class ZkConfter implements InitializingBean {
 
     private ZkClient zkClient;
     private Resource configLocation;
+    private List<String> filePathList;
 
     private String appName;
     private String root;
@@ -67,7 +68,7 @@ public class ZkConfter implements InitializingBean {
         this.syncZkConfter();
 
         //监听配置文件
-        this.listenZkConfter();
+        this.watchZkConfter();
 
     }
 
@@ -78,18 +79,18 @@ public class ZkConfter implements InitializingBean {
     private void syncZkConfter() throws Exception {
         //获取本地配置文件信息
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        List<Resource> fileList = new ArrayList<Resource>();
+        List<Resource> resList = new ArrayList<Resource>();
 
         String[] incArray = includes.split(",");
         for (String inc : incArray) {
             Resource[] resources = resolver.getResources(getAppPath() + root + "/" + inc);
-            fileList.addAll(Arrays.asList(resources));
+            resList.addAll(Arrays.asList(resources));
         }
 
         String[] excArray = excludes.split(",");
         for (String exc : excArray) {
             Resource[] resources = resolver.getResources(getAppPath() + root + "/" + exc);
-            for (Iterator<Resource> it = fileList.iterator(); it.hasNext(); ) {
+            for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
                 Resource r1 = it.next();
                 for (Resource r2 : resources) {
                     if (r1.getFile().getPath().equals(r2.getFile().getPath()))
@@ -101,7 +102,7 @@ public class ZkConfter implements InitializingBean {
 
         //上传文件到配置中心
         List<String> upPathList = new ArrayList<String>();
-        for (Iterator<Resource> it = fileList.iterator(); it.hasNext(); ) {
+        for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
             Resource res = it.next();
             String path = ((FileSystemResource) res).getPath();
             path = path.replaceFirst(getAppPath().replaceFirst("file:/", "") + root, "");
@@ -160,13 +161,25 @@ public class ZkConfter implements InitializingBean {
                     on.close();
             }
         }
+
+
+        //记录zk中所有的配置文件的path
+        this.filePathList = new ArrayList<String>();
+        filePathList.addAll(upPathList);
+        filePathList.addAll(dwPathList);
     }
 
 
     /**
      * 监听配置文件
      */
-    private void listenZkConfter() {
+    private void watchZkConfter() {
+//        zkClient.watchForChilds();
+//        zkClient.watchForData();
+//
+//        zkClient.subscribeChildChanges();
+
+
     }
 
 
