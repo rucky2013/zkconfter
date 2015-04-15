@@ -3,6 +3,11 @@
 *.iws
 *.ids
 *.iml
+*.log
 
-/target
-/Webapp/WEB-INF/classes
+classes
+target
+.idea
+.settings
+.project
+.classpath
