@@ -78,7 +78,7 @@
                         <configuration>
                             <jarName>${project.artifactId}-${project.version}</jarName>
                             <includes>
-                                <include>com/github/zkconfter/client/**</include>
+                                <include>com/alibaba/zkconfter/client/**</include>
                                 <include>zkconfter.properties</include>
                             </includes>
                         </configuration>
