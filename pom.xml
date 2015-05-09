@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.zkconfter</groupId>
     <artifactId>zkconfter</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
 
     <url>https://github.com/lpn520/zkconfter.git</url>
