@@ -1,8 +1,8 @@
-package com.github.zkconfter.web;
+package com.alibaba.zkconfter.web;
 
-import com.github.zkconfter.client.ZkConfter;
-import com.github.jsplite.mvc.Controller;
-import com.github.jsplite.mvc.ModelView;
+import com.alibaba.zkconfter.client.ZkConfter;
+import com.alibaba.jsplite.mvc.Controller;
+import com.alibaba.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

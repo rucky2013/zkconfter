@@ -1,9 +1,9 @@
-package com.github.zkconfter.client;
+package com.alibaba.zkconfter.client.util;
 
 /**
  * Created by pinian.lpn on 2015/3/4.
  */
-public final class ConfigConst {
+public final class SysConstant {
 
     /**
      * Zk配置中心地址

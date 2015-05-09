@@ -1,5 +1,7 @@
-package com.github.zkconfter.client;
+package com.alibaba.zkconfter.client;
 
+import com.alibaba.zkconfter.client.util.SysConstant;
+import com.alibaba.zkconfter.client.util.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.InitializingBean;
@@ -44,11 +46,11 @@ public class ZkConfter implements InitializingBean {
             zkProps.load(configLocation.getInputStream());
         }
 
-        String zkServers = zkProps.getProperty(ConfigConst.ZK_SERVERS, "127.0.0.1;:2181");
-        appName = zkProps.getProperty(ConfigConst.APP_NAME);
-        root = zkProps.getProperty(ConfigConst.CONFIGS_ROOT);
-        includes = zkProps.getProperty(ConfigConst.CONFIGS_INCLUDES);
-        excludes = zkProps.getProperty(ConfigConst.CONFIGS_EXCLUDES, "");
+        String zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS, "127.0.0.1;:2181");
+        appName = zkProps.getProperty(SysConstant.APP_NAME);
+        root = zkProps.getProperty(SysConstant.CONFIGS_ROOT);
+        includes = zkProps.getProperty(SysConstant.CONFIGS_INCLUDES);
+        excludes = zkProps.getProperty(SysConstant.CONFIGS_EXCLUDES, "");
 
         //验证配置项
         if (StringUtils.isEmpty(appName))

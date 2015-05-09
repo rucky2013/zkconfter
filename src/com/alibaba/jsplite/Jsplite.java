@@ -1,7 +1,7 @@
-package com.github.jsplite;
+package com.alibaba.jsplite;
 
-import com.github.jsplite.mvc.Controller;
-import com.github.jsplite.mvc.ModelView;
+import com.alibaba.jsplite.mvc.Controller;
+import com.alibaba.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

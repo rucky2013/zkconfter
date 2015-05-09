@@ -1,4 +1,4 @@
-package com.github.jsplite.mvc;
+package com.alibaba.jsplite.mvc;
 
 import com.alibaba.fastjson.JSON;
 

@@ -1,4 +1,4 @@
-package com.github.jsplite.mvc;
+package com.alibaba.jsplite.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
