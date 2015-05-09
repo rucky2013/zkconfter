@@ -1,7 +1,7 @@
-package com.alibaba.jsplite;
+package com.alibaba.zkconfter.web.jsplite;
 
-import com.alibaba.jsplite.mvc.Controller;
-import com.alibaba.jsplite.mvc.ModelView;
+import com.alibaba.zkconfter.web.jsplite.mvc.Controller;
+import com.alibaba.zkconfter.web.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

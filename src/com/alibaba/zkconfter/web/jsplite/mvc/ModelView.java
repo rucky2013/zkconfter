@@ -1,4 +1,4 @@
-package com.alibaba.jsplite.mvc;
+package com.alibaba.zkconfter.web.jsplite.mvc;
 
 import com.alibaba.fastjson.JSON;
 

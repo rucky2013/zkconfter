@@ -1,4 +1,4 @@
-package com.alibaba.jsplite.mvc;
+package com.alibaba.zkconfter.web.jsplite.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
