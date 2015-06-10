@@ -2,9 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
-    <artifactId>zkconfter</artifactId>
+    <artifactId>zkconfter-client</artifactId>
     <version>1.0.0</version>
-    <packaging>war</packaging>
 
     <url>https://github.com/lpn520/zkconfter.git</url>
     <developers>
@@ -40,9 +39,9 @@
 
     <!-- 构建 -->
     <build>
-        <finalName>zkconfter</finalName>
         <sourceDirectory>src</sourceDirectory>
-        <outputDirectory>Webapp/WEB-INF/classes</outputDirectory>
+		<outputDirectory>target/classes</outputDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
         <resources>
             <resource>
                 <directory>src</directory>
@@ -65,54 +64,24 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <jarName>${project.artifactId}-${project.version}</jarName>
-                            <includes>
-                                <include>com/alibaba/zkconfter/client/**</include>
-                                <include>zkconfter.properties</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
+			</plugin>
+			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
-                            <includes>
-                                <include>com/alibaba/zkconfter/client/**</include>
-                                <include>zkconfter.properties</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <warSourceDirectory>Webapp</warSourceDirectory>
-                </configuration>
-            </plugin>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
 
@@ -132,12 +101,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
