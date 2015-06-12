@@ -5,15 +5,16 @@ import com.alibaba.zkconfter.client.util.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.*;
 
 
@@ -33,8 +34,32 @@ public class ZkConfter implements InitializingBean {
 
     private String appName;
     private String root;
-    private String includes;
-    private String excludes;
+    private String runtime;
+
+    public ZkConfter() {
+
+    }
+
+    public ZkConfter(Resource configLocation) {
+        this.configLocation = configLocation;
+    }
+
+    public ZkConfter(String zkConfterFile) {
+        try {
+            this.configLocation = new ClassPathResource(zkConfterFile);
+
+            if (!this.configLocation.exists()) {
+                this.configLocation = new FileSystemResource(zkConfterFile);
+
+                if (!this.configLocation.exists()) {
+                    this.configLocation = new UrlResource(zkConfterFile);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -48,17 +73,14 @@ public class ZkConfter implements InitializingBean {
 
         String zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS, "127.0.0.1;:2181");
         appName = zkProps.getProperty(SysConstant.APP_NAME);
-        root = zkProps.getProperty(SysConstant.CONFIGS_ROOT);
-        includes = zkProps.getProperty(SysConstant.CONFIGS_INCLUDES);
-        excludes = zkProps.getProperty(SysConstant.CONFIGS_EXCLUDES, "");
+        root = zkProps.getProperty(SysConstant.ROOT);
+        runtime = zkProps.getProperty(SysConstant.RUNTIME);
 
         //验证配置项
         if (StringUtils.isEmpty(appName))
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
         if (StringUtils.isEmpty(root))
             throw new NullPointerException("Property zkconfter.configs.root cannot be null.");
-        if (StringUtils.isEmpty(includes))
-            throw new NullPointerException("Property zkconfter.configs.includes cannot be null.");
 
         //创建ZkClient对象
         zkClient = new ZkClient(zkServers);
@@ -79,66 +101,11 @@ public class ZkConfter implements InitializingBean {
      * 同步配置中心
      */
     private void syncZkConfter() throws Exception {
-        //获取本地配置文件信息
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        List<Resource> resList = new ArrayList<Resource>();
-
-        String[] incArray = includes.split(",");
-        for (String inc : incArray) {
-            Resource[] resources = resolver.getResources(getAppPath() + root + "/" + inc);
-            resList.addAll(Arrays.asList(resources));
-        }
-
-        String[] excArray = excludes.split(",");
-        for (String exc : excArray) {
-            Resource[] resources = resolver.getResources(getAppPath() + root + "/" + exc);
-            for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
-                Resource r1 = it.next();
-                for (Resource r2 : resources) {
-                    if (r1.getFile().getPath().equals(r2.getFile().getPath()))
-                        it.remove();
-                }
-            }
-        }
-
-
-        //上传文件到配置中心
-        List<String> upPathList = new ArrayList<String>();
-        for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
-            Resource res = it.next();
-            String path = ((FileSystemResource) res).getPath();
-            path = path.replaceFirst(getAppPath().replaceFirst("file:/", "") + root, "");
-            path = ZK_ROOT + appName + path;
-
-            //zk存在这个节点，不上传文件
-            if (zkClient.exists(path)) {
-                it.remove();
-                continue;
-            }
-
-            //上传配置文件
-            byte[] data = new byte[(int) res.getFile().length()];
-            InputStream in = null;
-            try {
-                in = res.getInputStream();
-                in.read(data);
-            } catch (Exception e) {
-                throw e;
-            } finally {
-                if (in != null)
-                    in.close();
-            }
-            zkClient.writeData(path, data, CreateMode.PERSISTENT);
-            upPathList.add(path);
-        }
-
-
         //从配置中心下载文件
-        List<String> dwPathList = zkClient.getChildrenOfFullPathRecursive(ZK_ROOT + appName);
-        dwPathList.removeAll(upPathList);
-        for (Iterator<String> it = dwPathList.iterator(); it.hasNext(); ) {
-            String dwPath = it.next();
-            byte[] data = zkClient.readData(dwPath);
+        filePathList = zkClient.getChildrenOfFullPathRecursive(ZK_ROOT + appName);
+        for (Iterator<String> it = filePathList.iterator(); it.hasNext(); ) {
+            String path = it.next();
+            byte[] data = zkClient.readData(path);
 
             //不是文件不下载
             if (data == null || data.length == 0) {
@@ -147,7 +114,7 @@ public class ZkConfter implements InitializingBean {
             }
 
             //下载配置文件
-            String filename = getAppPath() + root + dwPath.replaceFirst(ZK_ROOT + appName, "");
+            String filename = getAppPath() + root + path.replaceFirst(ZK_ROOT + appName, "");
             File file = new File(filename);
             if (!file.exists())
                 file.createNewFile();
@@ -163,12 +130,6 @@ public class ZkConfter implements InitializingBean {
                     on.close();
             }
         }
-
-
-        //记录zk中所有的配置文件的path
-        this.filePathList = new ArrayList<String>();
-        filePathList.addAll(upPathList);
-        filePathList.addAll(dwPathList);
     }
 
 

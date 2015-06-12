@@ -13,7 +13,7 @@ public class Index implements Controller {
     public void execute(HttpServletRequest request, HttpServletResponse response,
                         ModelView model) throws Exception {
 
-        ZkConfter zkConfter = new ZkConfter();
+        ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
         zkConfter.afterPropertiesSet();
 
         model.addObject("hello", "钩吻");

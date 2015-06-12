@@ -18,16 +18,11 @@ public final class SysConstant {
     /**
      * 配置文件根目录
      */
-    public final static String CONFIGS_ROOT = "zkconfter.configs.root";
+    public final static String ROOT = "zkconfter.root";
 
     /**
-     * 上传到配置中心的文件及目录
+     * 当前运行的环境 dev: 开发环境; test: 测试环境; www: 正式环境
      */
-    public final static String CONFIGS_INCLUDES = "zkconfter.configs.includes";
-
-    /**
-     * 从zkconfter.includes中排除目录或文件
-     */
-    public final static String CONFIGS_EXCLUDES = "zkconfter.configs.excludes";
+    public final static String RUNTIME = "zkconfter.runtime";
 
 }
