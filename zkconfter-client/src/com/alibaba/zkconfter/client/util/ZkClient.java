@@ -1,7 +1,5 @@
 package com.alibaba.zkconfter.client.util;
 
-import org.I0Itec.zkclient.exception.ZkException;
-import org.I0Itec.zkclient.exception.ZkInterruptedException;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
@@ -21,10 +19,6 @@ public class ZkClient extends org.I0Itec.zkclient.ZkClient {
         super(serverstring);
     }
 
-    public ZkClient(String zkServers, int connectionTimeout) {
-        super(zkServers, connectionTimeout);
-    }
-
     public ZkClient(String zkServers, int sessionTimeout, int connectionTimeout) {
         super(zkServers, sessionTimeout, connectionTimeout);
     }
@@ -41,7 +35,7 @@ public class ZkClient extends org.I0Itec.zkclient.ZkClient {
      * @param mode          模式
      * @param createParents 是否递归创建父节点
      */
-    public void create(final String path, final CreateMode mode, final boolean createParents) throws ZkInterruptedException, IllegalArgumentException, ZkException, RuntimeException {
+    public void create(final String path, final CreateMode mode, final boolean createParents) {
         try {
             super.create(path, null, mode);
         } catch (ZkNodeExistsException e) {
@@ -94,7 +88,7 @@ public class ZkClient extends org.I0Itec.zkclient.ZkClient {
 
         for (int i = 0; i < list.size(); i++) {
             String _path = path + "/" + list.get(i);
-            _path = _path.replaceFirst("\\/\\/","\\/");
+            _path = _path.replaceFirst("\\/\\/", "\\/");
             list.set(i, _path);
         }
 
