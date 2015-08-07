@@ -10,6 +10,6 @@ public class ZkConfterTest {
     @Test
     public void testZkConfter() throws Exception {
         ZkConfter zkConfter = new ZkConfter("conf/zkconfter.properties");
-        zkConfter.afterPropertiesSet();
+        zkConfter.syncZkConfter();
     }
 }

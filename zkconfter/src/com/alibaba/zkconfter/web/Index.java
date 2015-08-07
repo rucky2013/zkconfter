@@ -1,6 +1,7 @@
 package com.alibaba.zkconfter.web;
 
 import com.alibaba.zkconfter.client.ZkConfter;
+import com.alibaba.zkconfter.client.util.ZkClient;
 import com.alibaba.zkconfter.jsplite.mvc.Controller;
 import com.alibaba.zkconfter.jsplite.mvc.ModelView;
 
@@ -14,7 +15,7 @@ public class Index implements Controller {
                         ModelView model) throws Exception {
 
         ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
-        zkConfter.afterPropertiesSet();
+        ZkClient zkClient = zkConfter.getZkClient();
 
         model.addObject("hello", "钩吻");
     }

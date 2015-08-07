@@ -36,13 +36,14 @@ public class ZkConfter implements InitializingBean {
     private final static String DEFAULT_ZKCONFTER_FILE = "zkconfter.properties";
     private final static String ZK_ROOT = "/zkconfter/";
 
-    private ZkClient zkClient;
     private Resource configLocation;
-    private List<String> filePathList;
 
     private String appName;
     private String root;
     private String runtime;
+
+    private ZkClient zkClient;
+    private List<String> filePathList;
 
     /**
      * 构造函数
@@ -54,7 +55,12 @@ public class ZkConfter implements InitializingBean {
      * 构造函数
      */
     public ZkConfter(Resource configLocation) {
-        this.configLocation = configLocation;
+        try {
+            this.configLocation = configLocation;
+            this.init();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -71,6 +77,7 @@ public class ZkConfter implements InitializingBean {
                     this.configLocation = new UrlResource(zkConfterFile);
                 }
             }
+            this.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -112,20 +119,18 @@ public class ZkConfter implements InitializingBean {
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
         if (StringUtils.isEmpty(root))
             throw new NullPointerException("Property zkconfter.configs.root cannot be null.");
-        if (StringUtils.isEmpty(runtime))
-            runtime = "";
-
-        //配置中心当前目录
-        String zkDir = ZK_ROOT + appName + "/" + runtime;
 
         //创建ZkClient对象
         zkClient = new ZkClient(zkServers);
-        if (!zkClient.exists(zkDir)) {
-            zkClient.create(zkDir, CreateMode.PERSISTENT, true);
+
+        //配置中心当前目录
+        String zkPath = this.getZkPath();
+        if (!zkClient.exists(zkPath)) {
+            zkClient.create(zkPath, CreateMode.PERSISTENT, true);
         }
 
         //获取配置中心文件列表
-        filePathList = zkClient.getChildrenOfFullPathRecursive(zkDir);
+        filePathList = zkClient.getChildrenOfFullPathRecursive(zkPath);
     }
 
     /**
@@ -150,7 +155,7 @@ public class ZkConfter implements InitializingBean {
      */
     public void uploadZkConfter() throws IOException {
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource[] resources = resolver.getResources("file:/" + getAppPath() + root + "/" + runtime + "/**");
+        Resource[] resources = resolver.getResources("file:/" + this.getLcPath() + "/**");
         List<Resource> resList = Arrays.asList(resources);
 
         //上传文件到配置中心
@@ -212,11 +217,6 @@ public class ZkConfter implements InitializingBean {
         }
     }
 
-
-    public ZkClient getZkClient() {
-        return zkClient;
-    }
-
     public Resource getConfigLocation() {
         return configLocation;
     }
@@ -225,8 +225,20 @@ public class ZkConfter implements InitializingBean {
         this.configLocation = configLocation;
     }
 
+    public ZkClient getZkClient() {
+        return zkClient;
+    }
+
+    private String getZkPath() {
+        return ZK_ROOT + appName + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+    }
+
     private String getZkPath(String lcPath) {
         return ZK_ROOT + appName + lcPath.replaceFirst(getAppPath() + root, "");
+    }
+
+    private String getLcPath() {
+        return getAppPath() + root + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
     }
 
     private String getLcPath(String zkPath) {
@@ -236,7 +248,7 @@ public class ZkConfter implements InitializingBean {
     /**
      * 获取系统的根目录
      */
-    public static String getAppPath() {
+    public String getAppPath() {
         return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
     }
 
