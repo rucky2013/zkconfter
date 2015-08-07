@@ -7,6 +7,7 @@ import com.alibaba.zkconfter.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public class Index implements Controller {
 
@@ -17,7 +18,13 @@ public class Index implements Controller {
         ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
         ZkClient zkClient = zkConfter.getZkClient();
 
-        model.addObject("hello", "钩吻");
+        StringBuilder sb = new StringBuilder();
+        List<String> list = zkClient.getChildrenOfFullPathRecursive("/");
+        for(String s : list){
+            sb.append(s + "<br>");
+        }
+
+        model.addObject("hello", sb.toString());
     }
 
 }

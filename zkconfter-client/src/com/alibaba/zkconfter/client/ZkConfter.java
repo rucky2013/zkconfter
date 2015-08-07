@@ -178,6 +178,7 @@ public class ZkConfter implements InitializingBean {
             }
 
             zkClient.writeData(zkPath, data, CreateMode.PERSISTENT);
+            logger.info("上传文件:" + zkPath);
         }
     }
 
@@ -214,6 +215,8 @@ public class ZkConfter implements InitializingBean {
                 if (on != null)
                     on.close();
             }
+
+            logger.info("下载文件:" + zkPath);
         }
     }
 

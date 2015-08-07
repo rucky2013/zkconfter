@@ -93,7 +93,9 @@ public class ZkClient extends org.I0Itec.zkclient.ZkClient {
             return new ArrayList<String>();
 
         for (int i = 0; i < list.size(); i++) {
-            list.set(i, path + "/" + list.get(i));
+            String _path = path + "/" + list.get(i);
+            _path = _path.replaceFirst("\\/\\/","\\/");
+            list.set(i, _path);
         }
 
         return list;
