@@ -56,7 +56,7 @@ public class ZkConfter implements InitializingBean {
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,7 +93,6 @@ public class ZkConfter implements InitializingBean {
 
         //监听配置文件
         this.watchZkConfter();
-
     }
 
 

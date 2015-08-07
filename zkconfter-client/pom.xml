@@ -40,6 +40,7 @@
     <!-- 构建 -->
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>src-test</testSourceDirectory>
 		<outputDirectory>target/classes</outputDirectory>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
         <resources>
@@ -91,6 +92,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>3.2.13.RELEASE</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
