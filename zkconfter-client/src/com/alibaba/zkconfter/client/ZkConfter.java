@@ -36,7 +36,7 @@ public class ZkConfter implements InitializingBean {
     private final static String DEFAULT_ZKCONFTER_FILE = "zkconfter.properties";
     private final static String ZK_ROOT = "/zkconfter/";
 
-    private Resource configLocation;
+    private Resource config;
 
     private String appName;
     private String root;
@@ -54,9 +54,9 @@ public class ZkConfter implements InitializingBean {
     /**
      * 构造函数
      */
-    public ZkConfter(Resource configLocation) {
+    public ZkConfter(Resource config) {
         try {
-            this.configLocation = configLocation;
+            this.config = config;
             this.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -68,13 +68,13 @@ public class ZkConfter implements InitializingBean {
      */
     public ZkConfter(String zkConfterFile) {
         try {
-            this.configLocation = new ClassPathResource(zkConfterFile);
+            this.config = new ClassPathResource(zkConfterFile);
 
-            if (!this.configLocation.exists()) {
-                this.configLocation = new FileSystemResource(zkConfterFile);
+            if (!this.config.exists()) {
+                this.config = new FileSystemResource(zkConfterFile);
 
-                if (!this.configLocation.exists()) {
-                    this.configLocation = new UrlResource(zkConfterFile);
+                if (!this.config.exists()) {
+                    this.config = new UrlResource(zkConfterFile);
                 }
             }
             this.init();
@@ -102,10 +102,10 @@ public class ZkConfter implements InitializingBean {
     public void init() throws IOException {
         //获取zkconfter配置
         Properties zkProps = new Properties();
-        if (configLocation == null || !configLocation.exists()) {
+        if (config == null || !config.exists()) {
             zkProps.load(this.getClass().getClassLoader().getResourceAsStream(DEFAULT_ZKCONFTER_FILE));
         } else {
-            zkProps.load(configLocation.getInputStream());
+            zkProps.load(config.getInputStream());
         }
 
         String zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS, "127.0.0.1;:2181");
@@ -219,12 +219,12 @@ public class ZkConfter implements InitializingBean {
         }
     }
 
-    public Resource getConfigLocation() {
-        return configLocation;
+    public Resource getConfig() {
+        return config;
     }
 
-    public void setConfigLocation(Resource configLocation) {
-        this.configLocation = configLocation;
+    public void setConfig(Resource config) {
+        this.config = config;
     }
 
     public ZkClient getZkClient() {

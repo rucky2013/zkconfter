@@ -20,33 +20,35 @@ public class PropertyPlaceholderConfigurer extends
 	
 	private String contextPath = this.getClass().getResource("/").toString().replaceAll("WEB-INF/classes/", "");
 	private ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-	private Resource profile;
-	private String[] configs;
+	private Resource config;
+	private String[] locations;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(configs==null)
+        if(config ==null)
+            return;
+		if(locations ==null)
 			return;
 
 		List<Resource> resources = new LinkedList<Resource>();
-		resources.add(profile);
+		resources.add(config);
 			
 		Properties propsConf = new Properties();
-		propsConf.load(profile.getInputStream());		
+		propsConf.load(config.getInputStream());
 		String regex = "\\$\\{(.+)\\}";
 		
-		for(String config : configs){
+		for(String location : locations){
 			Pattern p = Pattern.compile(regex);
-			Matcher m = p.matcher(config);
+			Matcher m = p.matcher(location);
 			for(int i=1;m.find();i++){
-				if(config.startsWith("file://") || config.startsWith("classpath:") || config.startsWith("classpath*:")){
-					config = config.replaceFirst(regex, propsConf.getProperty(m.group(i)));
+				if(location.startsWith("file://") || location.startsWith("classpath:") || location.startsWith("classpath*:")){
+					location = location.replaceFirst(regex, propsConf.getProperty(m.group(i)));
 				}else{
-					config = contextPath + config.replaceFirst(regex, propsConf.getProperty(m.group(i)));
+					location = contextPath + location.replaceFirst(regex, propsConf.getProperty(m.group(i)));
 				}
 			}
 			
-			Resource[] a = this.resourcePatternResolver.getResources(config);
+			Resource[] a = this.resourcePatternResolver.getResources(location);
 			if(a!=null){
 				for(Resource r : a){
 					resources.add(r);
@@ -58,12 +60,19 @@ public class PropertyPlaceholderConfigurer extends
 	}
 
 
-	public void setProfile(Resource profile) {
-		this.profile = profile;
-	}
-	
-	public void setConfigs(String[] configs){
-		this.configs = configs;
-	}
-	
+    public Resource getConfig() {
+        return config;
+    }
+
+    public void setConfig(Resource config) {
+        this.config = config;
+    }
+
+    public String[] getLocations() {
+        return locations;
+    }
+
+    public void setLocations(String[] locations) {
+        this.locations = locations;
+    }
 }
