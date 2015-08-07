@@ -11,14 +11,22 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 
 /**
+ * ZkConfter 主操作对象，可以配置在Spring中
+ * <p/>
  * Created by pinian.lpn on 2015/1/15.
  */
 public class ZkConfter implements InitializingBean {
@@ -36,14 +44,22 @@ public class ZkConfter implements InitializingBean {
     private String root;
     private String runtime;
 
+    /**
+     * 构造函数
+     */
     public ZkConfter() {
-
     }
 
+    /**
+     * 构造函数
+     */
     public ZkConfter(Resource configLocation) {
         this.configLocation = configLocation;
     }
 
+    /**
+     * 构造函数
+     */
     public ZkConfter(String zkConfterFile) {
         try {
             this.configLocation = new ClassPathResource(zkConfterFile);
@@ -61,9 +77,24 @@ public class ZkConfter implements InitializingBean {
     }
 
 
+    /**
+     * 在BeanFactory载入后执行
+     *
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        //获取配置文件数据
+        this.init();
+        this.syncZkConfter();
+    }
+
+    /**
+     * 初始化配置参数
+     *
+     * @throws IOException
+     */
+    public void init() throws IOException {
+        //获取zkconfter配置
         Properties zkProps = new Properties();
         if (configLocation == null || !configLocation.exists()) {
             zkProps.load(this.getClass().getClassLoader().getResourceAsStream(DEFAULT_ZKCONFTER_FILE));
@@ -81,40 +112,90 @@ public class ZkConfter implements InitializingBean {
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
         if (StringUtils.isEmpty(root))
             throw new NullPointerException("Property zkconfter.configs.root cannot be null.");
+        if (StringUtils.isEmpty(runtime))
+            runtime = "";
+
+        //配置中心当前目录
+        String zkDir = ZK_ROOT + appName + "/" + runtime;
 
         //创建ZkClient对象
         zkClient = new ZkClient(zkServers);
-        if (!zkClient.exists(ZK_ROOT + appName)) {
-            zkClient.create(ZK_ROOT + appName, CreateMode.PERSISTENT, true);
+        if (!zkClient.exists(zkDir)) {
+            zkClient.create(zkDir, CreateMode.PERSISTENT, true);
         }
 
-        //同步配置中心
-        this.syncZkConfter();
-
-        //监听配置文件
-        this.watchZkConfter();
+        //获取配置中心文件列表
+        filePathList = zkClient.getChildrenOfFullPathRecursive(zkDir);
     }
-
 
     /**
      * 同步配置中心
+     *
+     * @throws IOException
      */
-    private void syncZkConfter() throws Exception {
-        //从配置中心下载文件
-        filePathList = zkClient.getChildrenOfFullPathRecursive(ZK_ROOT + appName);
-        for (Iterator<String> it = filePathList.iterator(); it.hasNext(); ) {
-            String path = it.next();
-            byte[] data = zkClient.readData(path);
+    public void syncZkConfter() throws IOException {
+        if (CollectionUtils.isEmpty(filePathList)) {
+            //如果目录为空，则上传初始化配置文件
+            this.uploadZkConfter();
+        } else {
+            //如果不为空，则直接下载并覆盖本地文件
+            this.downloadZkConfter();
+        }
+    }
 
-            //不是文件不下载
+    /**
+     * 上传本地文件至配置中心
+     *
+     * @throws IOException
+     */
+    public void uploadZkConfter() throws IOException {
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("file:/" + getAppPath() + root + "/" + runtime + "/**");
+        List<Resource> resList = Arrays.asList(resources);
+
+        //上传文件到配置中心
+        for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
+            Resource res = it.next();
+            String lcPath = ((FileSystemResource) res).getPath();
+            String zkPath = this.getZkPath(lcPath);
+
+            //上传配置文件
+            byte[] data = new byte[(int) res.getFile().length()];
+            InputStream in = null;
+            try {
+                in = res.getInputStream();
+                in.read(data);
+            } catch (IOException e) {
+                throw e;
+            } finally {
+                if (in != null)
+                    in.close();
+            }
+
+            zkClient.writeData(zkPath, data, CreateMode.PERSISTENT);
+        }
+    }
+
+    /**
+     * 下载配置中心文件至本地
+     *
+     * @throws IOException
+     */
+    public void downloadZkConfter() throws IOException {
+        //从配置中心下载文件
+        for (Iterator<String> it = filePathList.iterator(); it.hasNext(); ) {
+            String zkPath = it.next();
+            byte[] data = zkClient.readData(zkPath);
+
+            //如果不是文件节点，则不下载
             if (data == null || data.length == 0) {
                 it.remove();
                 continue;
             }
 
             //下载配置文件
-            String filename = getAppPath() + root + path.replaceFirst(ZK_ROOT + appName, "");
-            File file = new File(filename);
+            String lcPath = this.getLcPath(zkPath);
+            File file = new File(lcPath);
             if (!file.exists())
                 file.createNewFile();
 
@@ -122,26 +203,13 @@ public class ZkConfter implements InitializingBean {
             try {
                 on = new FileOutputStream(file);
                 on.write(data);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw e;
             } finally {
                 if (on != null)
                     on.close();
             }
         }
-    }
-
-
-    /**
-     * 监听配置文件
-     */
-    private void watchZkConfter() {
-//        zkClient.watchForChilds();
-//        zkClient.watchForData();
-//
-//        zkClient.subscribeChildChanges();
-
-
     }
 
 
@@ -157,11 +225,19 @@ public class ZkConfter implements InitializingBean {
         this.configLocation = configLocation;
     }
 
+    private String getZkPath(String lcPath) {
+        return ZK_ROOT + appName + lcPath.replaceFirst(getAppPath() + root, "");
+    }
+
+    private String getLcPath(String zkPath) {
+        return getAppPath() + root + zkPath.replaceFirst(ZK_ROOT + appName, "");
+    }
+
     /**
      * 获取系统的根目录
      */
     public static String getAppPath() {
-        return ZkConfter.class.getResource("/").toString().replaceAll("WEB-INF/classes/", "");
+        return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
     }
 
 }
