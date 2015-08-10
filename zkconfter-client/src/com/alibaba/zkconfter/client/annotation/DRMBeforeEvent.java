@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client.drm;
+package com.alibaba.zkconfter.client.annotation;
 
 import java.lang.annotation.*;
 

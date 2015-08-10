@@ -1,25 +1,23 @@
-package com.alibaba.zkconfter.client.drm;
+package com.alibaba.zkconfter.client.annotation;
 
 import java.lang.annotation.*;
 
 /**
- *
  * 分布式资源管理的（DRM）中描述管理资源的注解。
- *
+ * <p/>
  * Created by pinian.lpn on 2015/1/15.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DRMResource {
-
     /**
-     * 资源的标识。
+     * 资源名称
      */
-    String id();
+    String name() default "";
 
     /**
-     * 资源描述。
+     * 资源描述
      */
     String description() default "";
 

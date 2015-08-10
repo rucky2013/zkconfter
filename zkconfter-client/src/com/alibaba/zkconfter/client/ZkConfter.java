@@ -1,5 +1,7 @@
 package com.alibaba.zkconfter.client;
 
+import com.alibaba.zkconfter.client.annotation.DRMAttribute;
+import com.alibaba.zkconfter.client.annotation.DRMResource;
 import com.alibaba.zkconfter.client.util.BeanUtils;
 import com.alibaba.zkconfter.client.util.ZkClient;
 import org.apache.log4j.Logger;
@@ -18,10 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 /**
@@ -46,7 +46,9 @@ public class ZkConfter implements InitializingBean {
     private String drmPackage;
 
     private ZkClient zkClient;
-    private List<String> filePathList;
+    private List<String> zkPathList;
+
+    private static Map<String, Object> zkDrmPool = new HashMap<String, Object>();
 
     /**
      * 构造函数
@@ -95,7 +97,9 @@ public class ZkConfter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         this.init();
         this.syncZkConfter();
-        this.syncDrmZkConfter();
+        if (drm.equals("true")) {
+            this.syncDrmZkConfter();
+        }
     }
 
     /**
@@ -135,7 +139,7 @@ public class ZkConfter implements InitializingBean {
         }
 
         //获取配置中心文件列表
-        filePathList = zkClient.getChildrenOfFullPathRecursive(zkPath);
+        zkPathList = zkClient.getChildrenOfFullPathRecursive(zkPath);
     }
 
     /**
@@ -144,7 +148,7 @@ public class ZkConfter implements InitializingBean {
      * @throws IOException
      */
     public void syncZkConfter() throws IOException {
-        if (CollectionUtils.isEmpty(filePathList)) {
+        if (CollectionUtils.isEmpty(zkPathList)) {
             //如果目录为空，则上传初始化配置文件
             this.uploadZkConfter();
         } else {
@@ -167,7 +171,7 @@ public class ZkConfter implements InitializingBean {
         for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
             Resource res = it.next();
             String lcPath = ((FileSystemResource) res).getPath();
-            String zkPath = this.getZkPath(lcPath);
+            String zkPath = this.getZkPathByLcPath(lcPath);
 
             //上传配置文件
             byte[] data = new byte[(int) res.getFile().length()];
@@ -194,7 +198,7 @@ public class ZkConfter implements InitializingBean {
      */
     public void downloadZkConfter() throws IOException {
         //从配置中心下载文件
-        for (Iterator<String> it = filePathList.iterator(); it.hasNext(); ) {
+        for (Iterator<String> it = zkPathList.iterator(); it.hasNext(); ) {
             String zkPath = it.next();
             byte[] data = zkClient.readData(zkPath);
 
@@ -205,7 +209,7 @@ public class ZkConfter implements InitializingBean {
             }
 
             //下载配置文件
-            String lcPath = this.getLcPath(zkPath);
+            String lcPath = this.getLcPathByZkPath(zkPath);
             File file = new File(lcPath);
             if (!file.exists())
                 file.createNewFile();
@@ -226,23 +230,53 @@ public class ZkConfter implements InitializingBean {
     }
 
     /**
+     * 同步动态资源(DRM)
+     */
+    public void syncDrmZkConfter() throws IllegalAccessException, InstantiationException {
+
+        List<Class<?>> list = BeanUtils.getClasses(drmPackage);
+        for (Class<?> clazz : list) {
+            DRMResource drmResource = clazz.getAnnotation(DRMResource.class);
+            if (drmResource != null) {
+                Object inst = clazz.newInstance();
+                zkDrmPool.put(clazz.getCanonicalName(), inst);
+
+                // 创建类节点
+                String zkDrmPath = this.getZkDrmPath() + "/" + clazz.getCanonicalName();
+                if (!zkClient.exists(zkDrmPath)) {
+                    zkClient.create(zkDrmPath, CreateMode.PERSISTENT, true);
+
+                    String data = "{name="+ drmResource.name() +", description="+ drmResource.description() +"}";
+                    zkClient.writeData(zkDrmPath, data, CreateMode.PERSISTENT);
+                }
+
+                // 创建属性节点
+                Field[] fields = clazz.getDeclaredFields();
+                for (Field field : fields) {
+                    DRMAttribute drmAttribute = field.getAnnotation(DRMAttribute.class);
+                    if (drmAttribute != null) {
+                        String zkDrmField = zkDrmPath + "/" + field.getName();
+                        if (!zkClient.exists(zkDrmField)) {
+                            zkClient.create(zkDrmField, CreateMode.PERSISTENT, true);
+
+                            String data = "{name="+ drmAttribute.name() +", description="+ drmAttribute.description() +", value="+ field.get(inst) +"}";
+                            zkClient.writeData(zkDrmField, data, CreateMode.PERSISTENT);
+                        }
+                    }
+                }
+
+
+                this.watchDrmZkConfter(clazz);
+            }
+        }
+    }
+
+    /**
      * 监听动态资源(DRM)
      */
-    public void syncDrmZkConfter() {
-        BeanUtils.getClasses("");
+    public void watchDrmZkConfter(Class<?> clazz) {
 
     }
-
-    public void updateDrmZkConfter() {
-
-    }
-
-    public void downloadDrmZkConfter() {
-
-    }
-
-
-
 
 
     public Resource getConfig() {
@@ -257,27 +291,38 @@ public class ZkConfter implements InitializingBean {
         return zkClient;
     }
 
-    private String getZkPath() {
-        return ZK_ROOT + appName + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
-    }
-
-    private String getZkPath(String lcPath) {
-        return ZK_ROOT + appName + lcPath.replaceFirst(getAppPath() + root, "");
+    private String getAppRoot() {
+        return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
     }
 
     private String getLcPath() {
-        return getAppPath() + root + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getAppRoot() + root + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
     }
 
-    private String getLcPath(String zkPath) {
-        return getAppPath() + root + zkPath.replaceFirst(ZK_ROOT + appName, "");
+    private String getZkPath() {
+        return ZK_ROOT + appName + "/config" + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+    }
+
+    private String getZkDrmPath() {
+        return ZK_ROOT + appName + "/drm" + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+    }
+
+    private String getLcPathByZkPath(String zkPath) {
+        return getAppRoot() + root + zkPath.replaceFirst(ZK_ROOT + appName, "");
+    }
+
+    private String getZkPathByLcPath(String lcPath) {
+        return ZK_ROOT + appName + "/config" + lcPath.replaceFirst(getAppRoot() + root, "");
     }
 
     /**
-     * 获取系统的根目录
+     * 获取DRM对象
+     * @param clazz
+     * @param <T>
+     * @return
      */
-    private String getAppPath() {
-        return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
+    public static <T> T drm(Class<T> clazz){
+        return (T) zkDrmPool.get(clazz.getCanonicalName());
     }
 
 }

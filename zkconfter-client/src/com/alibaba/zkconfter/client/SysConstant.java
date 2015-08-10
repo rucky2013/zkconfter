@@ -4,7 +4,6 @@ package com.alibaba.zkconfter.client;
  * Created by pinian.lpn on 2015/3/4.
  */
 public final class SysConstant {
-
     /**
      * Zk配置中心地址
      */

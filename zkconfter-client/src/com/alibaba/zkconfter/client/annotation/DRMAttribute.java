@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client.drm;
+package com.alibaba.zkconfter.client.annotation;
 
 
 import java.lang.annotation.*;
@@ -16,10 +16,13 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface DRMAttribute {
-
+    /**
+     * 属性名称
+     */
     String name() default "";
 
+    /**
+     * 属性描述
+     */
     String description() default "";
-
-    String globalScope() default "";
 }
