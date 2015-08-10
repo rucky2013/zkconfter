@@ -1,7 +1,6 @@
 package com.alibaba.zkconfter.client;
 
 import com.alibaba.zkconfter.client.util.BeanUtils;
-import com.alibaba.zkconfter.client.util.SysConstant;
 import com.alibaba.zkconfter.client.util.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;

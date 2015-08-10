@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client.util;
+package com.alibaba.zkconfter.client;
 
 /**
  * Created by pinian.lpn on 2015/3/4.
@@ -24,5 +24,15 @@ public final class SysConstant {
      * 当前运行的环境 dev: 开发环境; test: 测试环境; www: 正式环境
      */
     public final static String RUNTIME = "zkconfter.runtime";
+
+    /**
+     * 是否启用动态资源管控(DRM)
+     */
+    public final static String DRM = "zkconfter.drm";
+
+    /**
+     * 从哪个包开始扫描DRM注解
+     */
+    public final static String DRM_PACKAGE = "zkconfter.drm.package";
 
 }
