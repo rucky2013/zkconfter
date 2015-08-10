@@ -1,6 +1,6 @@
 package com.alibaba.zkconfter.client;
 
-import com.alibaba.zkconfter.client.util.SysConstant;
+import com.alibaba.zkconfter.client.util.BeanUtils;
 import com.alibaba.zkconfter.client.util.ZkClient;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
@@ -38,9 +38,12 @@ public class ZkConfter implements InitializingBean {
 
     private Resource config;
 
+    private String zkServers;
     private String appName;
     private String root;
     private String runtime;
+    private String drm;
+    private String drmPackage;
 
     private ZkClient zkClient;
     private List<String> filePathList;
@@ -92,6 +95,7 @@ public class ZkConfter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         this.init();
         this.syncZkConfter();
+        this.syncDrmZkConfter();
     }
 
     /**
@@ -108,16 +112,18 @@ public class ZkConfter implements InitializingBean {
             zkProps.load(config.getInputStream());
         }
 
-        String zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS, "127.0.0.1;:2181");
+        zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS);
         appName = zkProps.getProperty(SysConstant.APP_NAME);
-        root = zkProps.getProperty(SysConstant.ROOT);
-        runtime = zkProps.getProperty(SysConstant.RUNTIME);
+        root = zkProps.getProperty(SysConstant.ROOT, "");
+        runtime = zkProps.getProperty(SysConstant.RUNTIME, "");
+        drm = zkProps.getProperty(SysConstant.DRM, "");
+        drmPackage = zkProps.getProperty(SysConstant.DRM_PACKAGE, "");
 
         //验证配置项
+        if (StringUtils.isEmpty(zkServers))
+            throw new NullPointerException("Property zkconfter.zkServers cannot be null.");
         if (StringUtils.isEmpty(appName))
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
-        if (StringUtils.isEmpty(root))
-            throw new NullPointerException("Property zkconfter.configs.root cannot be null.");
 
         //创建ZkClient对象
         zkClient = new ZkClient(zkServers);
@@ -219,6 +225,26 @@ public class ZkConfter implements InitializingBean {
         }
     }
 
+    /**
+     * 监听动态资源(DRM)
+     */
+    public void syncDrmZkConfter() {
+        BeanUtils.getClasses("");
+
+    }
+
+    public void updateDrmZkConfter() {
+
+    }
+
+    public void downloadDrmZkConfter() {
+
+    }
+
+
+
+
+
     public Resource getConfig() {
         return config;
     }
@@ -250,7 +276,7 @@ public class ZkConfter implements InitializingBean {
     /**
      * 获取系统的根目录
      */
-    public String getAppPath() {
+    private String getAppPath() {
         return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
     }
 
