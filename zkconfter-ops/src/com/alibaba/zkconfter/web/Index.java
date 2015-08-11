@@ -1,7 +1,7 @@
 package com.alibaba.zkconfter.web;
 
-import com.alibaba.zkconfter.client.ZkConfter;
-import com.alibaba.zkconfter.client.util.ZkClient;
+import com.alibaba.zkconfter.ZkConfter;
+import com.alibaba.zkconfter.util.ZkClient;
 import com.alibaba.zkconfter.jsplite.mvc.Controller;
 import com.alibaba.zkconfter.jsplite.mvc.ModelView;
 

@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.client.config;
+package com.alibaba.zkconfter.config;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;

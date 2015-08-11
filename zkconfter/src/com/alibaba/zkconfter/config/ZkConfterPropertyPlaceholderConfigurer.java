@@ -1,16 +1,6 @@
-package com.alibaba.zkconfter.client.config;
+package com.alibaba.zkconfter.config;
 
-import com.alibaba.zkconfter.client.ZkConfter;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.alibaba.zkconfter.ZkConfter;
 
 /**
  * 集成配置中心ZkConfter

@@ -1,7 +1,7 @@
-package com.alibaba.zkconfter.client.drm;
+package com.alibaba.zkconfter.drm;
 
-import com.alibaba.zkconfter.client.annotation.DRMAttribute;
-import com.alibaba.zkconfter.client.annotation.DRMResource;
+import com.alibaba.zkconfter.annotation.DRMAttribute;
+import com.alibaba.zkconfter.annotation.DRMResource;
 
 /**
  * Created by pinian.lpn on 2015/8/10.

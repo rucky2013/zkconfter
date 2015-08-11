@@ -1,11 +1,11 @@
-package com.alibaba.zkconfter.client;
+package com.alibaba.zkconfter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.zkconfter.client.annotation.DRMAttribute;
-import com.alibaba.zkconfter.client.annotation.DRMResource;
-import com.alibaba.zkconfter.client.util.BeanUtils;
-import com.alibaba.zkconfter.client.util.ZkClient;
+import com.alibaba.zkconfter.annotation.DRMAttribute;
+import com.alibaba.zkconfter.annotation.DRMResource;
+import com.alibaba.zkconfter.util.BeanUtils;
+import com.alibaba.zkconfter.util.ZkClient;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
