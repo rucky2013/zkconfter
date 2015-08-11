@@ -101,7 +101,7 @@ public class ZkConfter implements InitializingBean {
         this.init();
         this.syncZkConfter();
         if (drm.equals("true")) {
-            this.syncDrmZkConfter();
+            this.drmZkConfter();
         }
     }
 
@@ -233,9 +233,9 @@ public class ZkConfter implements InitializingBean {
     }
 
     /**
-     * 同步动态资源(DRM)
+     * 启动并同步动态资源(DRM)
      */
-    public void syncDrmZkConfter() throws IllegalAccessException, InstantiationException {
+    public void drmZkConfter() throws IllegalAccessException, InstantiationException {
         List<Class<?>> list = BeanUtils.getClasses(drmPackage);
         for (Class<?> clazz : list) {
             DRMResource drmResource = clazz.getAnnotation(DRMResource.class);
