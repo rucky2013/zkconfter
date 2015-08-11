@@ -46,7 +46,7 @@ public class ZkConfter implements InitializingBean {
     private String root;
     private String runtime;
     private String drm;
-    private String drmPackage;
+    private String drmPackages;
 
     private ZkClient zkClient;
     private List<String> zkPathList;
@@ -124,7 +124,7 @@ public class ZkConfter implements InitializingBean {
         root = zkProps.getProperty(SysConstant.ROOT, "");
         runtime = zkProps.getProperty(SysConstant.RUNTIME, "");
         drm = zkProps.getProperty(SysConstant.DRM, "");
-        drmPackage = zkProps.getProperty(SysConstant.DRM_PACKAGE, "");
+        drmPackages = zkProps.getProperty(SysConstant.DRM_PACKAGES, "");
 
         //验证配置项
         if (StringUtils.isEmpty(zkServers))
@@ -236,7 +236,16 @@ public class ZkConfter implements InitializingBean {
      * 启动并同步动态资源(DRM)
      */
     public void drmZkConfter() throws IllegalAccessException, InstantiationException {
-        List<Class<?>> list = BeanUtils.getClasses(drmPackage);
+        // 获取包下的class类
+        String[] packages = drmPackages.split(",");
+        Set<Class<?>> sets = new HashSet<Class<?>>();
+        for (String p : packages) {
+            sets.addAll(BeanUtils.getClasses(p));
+        }
+
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        list.addAll(sets);
+
         for (Class<?> clazz : list) {
             DRMResource drmResource = clazz.getAnnotation(DRMResource.class);
             if (drmResource != null) {

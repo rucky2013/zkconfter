@@ -32,6 +32,6 @@ public final class SysConstant {
     /**
      * 从哪个包开始扫描DRM注解
      */
-    public final static String DRM_PACKAGE = "zkconfter.drm.package";
+    public final static String DRM_PACKAGES = "zkconfter.drm.packages";
 
 }

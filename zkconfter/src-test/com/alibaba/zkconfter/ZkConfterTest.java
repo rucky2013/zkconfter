@@ -1,6 +1,13 @@
 package com.alibaba.zkconfter;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.zkconfter.ZkConfter;
+import com.alibaba.zkconfter.util.ZkClient;
+import org.apache.zookeeper.CreateMode;
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by pinian.lpn on 2015/8/7.
