@@ -76,6 +76,21 @@ public class ZkClient extends org.I0Itec.zkclient.ZkClient {
     }
 
     /**
+     * 判断有没有子节点
+     *
+     * @param path
+     * @return
+     */
+    public boolean hasChildren(String path){
+        List<String> list = super.getChildren(path);
+        if(list!=null && list.size()>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
      * 获取孩子节点的完整路径
      *
      * @param path

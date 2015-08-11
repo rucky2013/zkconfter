@@ -40,6 +40,7 @@ public class ZkConfter implements InitializingBean {
     private final static String ZK_ROOT = "/zkconfter/";
 
     private Resource config;
+    private ZkClient zkClient;
 
     private String zkServers;
     private String appName;
@@ -47,9 +48,6 @@ public class ZkConfter implements InitializingBean {
     private String runtime;
     private String drm;
     private String drmPackages;
-
-    private ZkClient zkClient;
-    private List<String> zkPathList;
 
     private static Map<String, Object> zkDrmPool = new HashMap<String, Object>();
 
@@ -134,15 +132,6 @@ public class ZkConfter implements InitializingBean {
 
         //创建ZkClient对象
         zkClient = new ZkClient(zkServers);
-
-        //配置中心当前目录
-        String zkPath = this.getZkPath();
-        if (!zkClient.exists(zkPath)) {
-            zkClient.create(zkPath, CreateMode.PERSISTENT, true);
-        }
-
-        //获取配置中心文件列表
-        zkPathList = zkClient.getChildrenOfFullPathRecursive(zkPath);
     }
 
     /**
@@ -151,11 +140,18 @@ public class ZkConfter implements InitializingBean {
      * @throws IOException
      */
     public void syncZkConfter() throws IOException {
-        if (CollectionUtils.isEmpty(zkPathList)) {
-            //如果目录为空，则上传初始化配置文件
+        //创建配置中心根目录
+        String zkPath = this.getZkPath();
+        if (!zkClient.exists(zkPath)) {
+            zkClient.create(zkPath, CreateMode.PERSISTENT, true);
+        }
+
+        //获取配置中心文件列表
+        if (!zkClient.hasChildren(zkPath)) {
+            //如果没有子节点，则上传初始化配置文件
             this.uploadZkConfter();
         } else {
-            //如果不为空，则直接下载并覆盖本地文件
+            //如果有子节点，则直接下载并覆盖本地文件
             this.downloadZkConfter();
         }
     }
@@ -201,6 +197,7 @@ public class ZkConfter implements InitializingBean {
      */
     public void downloadZkConfter() throws IOException {
         //从配置中心下载文件
+        List<String> zkPathList = zkClient.getChildrenOfFullPathRecursive(this.getZkPath());
         for (Iterator<String> it = zkPathList.iterator(); it.hasNext(); ) {
             String zkPath = it.next();
             byte[] data = zkClient.readData(zkPath);
