@@ -1,9 +1,12 @@
 package com.alibaba.zkconfter.client;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.zkconfter.client.annotation.DRMAttribute;
 import com.alibaba.zkconfter.client.annotation.DRMResource;
 import com.alibaba.zkconfter.client.util.BeanUtils;
 import com.alibaba.zkconfter.client.util.ZkClient;
+import org.I0Itec.zkclient.IZkDataListener;
 import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.InitializingBean;
@@ -233,49 +236,88 @@ public class ZkConfter implements InitializingBean {
      * 同步动态资源(DRM)
      */
     public void syncDrmZkConfter() throws IllegalAccessException, InstantiationException {
-
         List<Class<?>> list = BeanUtils.getClasses(drmPackage);
         for (Class<?> clazz : list) {
             DRMResource drmResource = clazz.getAnnotation(DRMResource.class);
             if (drmResource != null) {
-                Object inst = clazz.newInstance();
+                // 实例化
+                final Object inst = clazz.newInstance();
                 zkDrmPool.put(clazz.getCanonicalName(), inst);
 
                 // 创建类节点
-                String zkDrmPath = this.getZkDrmPath() + "/" + clazz.getCanonicalName();
-                if (!zkClient.exists(zkDrmPath)) {
-                    zkClient.create(zkDrmPath, CreateMode.PERSISTENT, true);
-
-                    String data = "{name="+ drmResource.name() +", description="+ drmResource.description() +"}";
-                    zkClient.writeData(zkDrmPath, data, CreateMode.PERSISTENT);
+                String zkDrmResource = this.getZkDrmPath() + "/" + clazz.getCanonicalName();
+                if (!zkClient.exists(zkDrmResource)) {
+                    zkClient.create(zkDrmResource, CreateMode.PERSISTENT, true);
                 }
+
+                // 设置资源节点
+                JSONObject dataResource = new JSONObject();
+                dataResource.put("name", drmResource.name());
+                dataResource.put("description", drmResource.description());
+                zkClient.writeData(zkDrmResource, dataResource.toString(), CreateMode.PERSISTENT);
 
                 // 创建属性节点
                 Field[] fields = clazz.getDeclaredFields();
-                for (Field field : fields) {
+                for (final Field field : fields) {
                     DRMAttribute drmAttribute = field.getAnnotation(DRMAttribute.class);
                     if (drmAttribute != null) {
-                        String zkDrmField = zkDrmPath + "/" + field.getName();
-                        if (!zkClient.exists(zkDrmField)) {
-                            zkClient.create(zkDrmField, CreateMode.PERSISTENT, true);
+                        field.setAccessible(true);
+                        String zkDrmAttribute = zkDrmResource + "/" + field.getName();
+                        if (!zkClient.exists(zkDrmAttribute)) {
+                            zkClient.create(zkDrmAttribute, CreateMode.PERSISTENT, true);
 
-                            String data = "{name="+ drmAttribute.name() +", description="+ drmAttribute.description() +", value="+ field.get(inst) +"}";
-                            zkClient.writeData(zkDrmField, data, CreateMode.PERSISTENT);
+                            // 设置属性节点
+                            JSONObject dataAttribute = new JSONObject();
+                            dataAttribute.put("name", drmAttribute.name());
+                            dataAttribute.put("description", drmAttribute.description());
+                            dataAttribute.put("value", field.get(inst));
+                            zkClient.writeData(zkDrmAttribute, dataAttribute.toString(), CreateMode.PERSISTENT);
+                        } else {
+                            // 设置属性节点
+                            JSONObject dataAttribute = JSON.parseObject(zkClient.readData(zkDrmAttribute).toString());
+                            dataAttribute.put("name", drmAttribute.name());
+                            dataAttribute.put("description", drmAttribute.description());
+                            field.set(inst, dataAttribute.get("value"));
+                            zkClient.writeData(zkDrmAttribute, dataAttribute.toString(), CreateMode.PERSISTENT);
                         }
+
+
+                        // 监听动态资源(DRM)
+                        zkClient.subscribeDataChanges(zkDrmAttribute, new IZkDataListener() {
+                            @Override
+                            public void handleDataChange(String dataPath, Object data) throws Exception {
+                                JSONObject dataAttribute = JSON.parseObject(data.toString());
+                                Object value = dataAttribute.get("value");
+                                field.set(inst, value);
+                                logger.info("推送DRM属性" + dataPath + "，值为:" + value);
+                            }
+
+                            @Override
+                            public void handleDataDeleted(String dataPath) throws Exception {
+                                logger.info("DRM清除废弃属性:" + dataPath);
+                            }
+                        });
                     }
                 }
 
+                //清除已废弃的属性节点
+                List<String> zkDrmAttributePaths = zkClient.getChildrenOfFullPathRecursive(zkDrmResource);
+                for (String path : zkDrmAttributePaths) {
+                    boolean flag = true;
+                    for (Field field : fields) {
+                        String zkDrmAttribute = zkDrmResource + "/" + field.getName();
+                        if (path.equals(zkDrmAttribute)) {
+                            flag = false;
+                            break;
+                        }
+                    }
 
-                this.watchDrmZkConfter(clazz);
+                    if (flag) {
+                        zkClient.deleteRecursive(path);
+                    }
+                }
             }
         }
-    }
-
-    /**
-     * 监听动态资源(DRM)
-     */
-    public void watchDrmZkConfter(Class<?> clazz) {
-
     }
 
 
@@ -295,33 +337,46 @@ public class ZkConfter implements InitializingBean {
         return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
     }
 
+    private String getLcRoot() {
+        return getAppRoot() + root;
+    }
+
+    private String getZkRoot() {
+        return ZK_ROOT + appName + "/config";
+    }
+
+    private String getZkDrmRoot() {
+        return ZK_ROOT + appName + "/drm";
+    }
+
     private String getLcPath() {
-        return getAppRoot() + root + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getLcRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
     }
 
     private String getZkPath() {
-        return ZK_ROOT + appName + "/config" + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getZkRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
     }
 
     private String getZkDrmPath() {
-        return ZK_ROOT + appName + "/drm" + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getZkDrmRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
     }
 
     private String getLcPathByZkPath(String zkPath) {
-        return getAppRoot() + root + zkPath.replaceFirst(ZK_ROOT + appName, "");
+        return getLcRoot() + zkPath.replaceFirst(getZkRoot(), "");
     }
 
     private String getZkPathByLcPath(String lcPath) {
-        return ZK_ROOT + appName + "/config" + lcPath.replaceFirst(getAppRoot() + root, "");
+        return getZkRoot() + lcPath.replaceFirst(getLcRoot(), "");
     }
 
     /**
      * 获取DRM对象
+     *
      * @param clazz
      * @param <T>
      * @return
      */
-    public static <T> T drm(Class<T> clazz){
+    public static <T> T drm(Class<T> clazz) {
         return (T) zkDrmPool.get(clazz.getCanonicalName());
     }
 
