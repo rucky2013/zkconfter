@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.alibaba</groupId>
-    <artifactId>zkconfter-client</artifactId>
+    <artifactId>zkconfter</artifactId>
     <version>1.0.0</version>
 
     <url>https://github.com/lpn520/zkconfter.git</url>
