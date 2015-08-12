@@ -117,17 +117,17 @@ public class ZkConfter implements InitializingBean {
             zkProps.load(config.getInputStream());
         }
 
-        zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS);
-        appName = zkProps.getProperty(SysConstant.APP_NAME);
+        zkServers = zkProps.getProperty(SysConstant.ZK_SERVERS, "");
+        appName = zkProps.getProperty(SysConstant.APP_NAME, "");
         root = zkProps.getProperty(SysConstant.ROOT, "");
         runtime = zkProps.getProperty(SysConstant.RUNTIME, "");
         drm = zkProps.getProperty(SysConstant.DRM, "");
         drmPackages = zkProps.getProperty(SysConstant.DRM_PACKAGES, "");
 
         //验证配置项
-        if (StringUtils.isEmpty(zkServers))
+        if (zkServers.equals(""))
             throw new NullPointerException("Property zkconfter.zkServers cannot be null.");
-        if (StringUtils.isEmpty(appName))
+        if (appName.equals(""))
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
 
         //创建ZkClient对象
@@ -356,15 +356,15 @@ public class ZkConfter implements InitializingBean {
     }
 
     private String getLcPath() {
-        return getLcRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getLcRoot() + (runtime.equals("") ? "" : "/" + runtime);
     }
 
     private String getZkPath() {
-        return getZkRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getZkRoot() + (runtime.equals("") ? "" : "/" + runtime);
     }
 
     private String getZkDrmPath() {
-        return getZkDrmRoot() + (StringUtils.isEmpty(runtime) ? "" : "/" + runtime);
+        return getZkDrmRoot() + (runtime.equals("") ? "" : "/" + runtime);
     }
 
     private String getLcPathByZkPath(String zkPath) {
