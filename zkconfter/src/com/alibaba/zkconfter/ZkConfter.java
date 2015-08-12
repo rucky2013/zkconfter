@@ -39,6 +39,7 @@ public class ZkConfter implements InitializingBean {
 
     private Resource config;
     private ZkClient zkClient;
+    private String appRoot;
 
     private String zkServers;
     private String appName;
@@ -338,7 +339,40 @@ public class ZkConfter implements InitializingBean {
     }
 
     private String getAppRoot() {
-        return ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "").replaceAll("WEB-INF/classes/", "");
+        if (appRoot != null)
+            return appRoot;
+
+        File file;
+
+        //classpath目录
+        String classpath = ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "");
+        appRoot = classpath;
+        file = new File(appRoot + root);
+        if (file.exists())
+            return appRoot;
+
+        if (classpath.lastIndexOf("WEB-INF/classes/") > -1) {
+            //如果是WEB系统，获取WEB-INF目录
+            appRoot = classpath.replaceAll("classes/", "");
+            file = new File(appRoot + root);
+            if (file.exists())
+                return appRoot;
+
+            //获取WEB系统根目录
+            appRoot = classpath.replaceAll("WEB-INF/classes/", "");
+            file = new File(appRoot + root);
+            if (file.exists())
+                return appRoot;
+        } else {
+            //如果不是WEB系统，获取应用根目录
+            appRoot = System.getProperty("user.dir").replaceAll("\\\\","/") + "/";
+            file = new File(appRoot + root);
+            if (file.exists())
+                return appRoot;
+        }
+
+        appRoot = "";
+        return appRoot;
     }
 
     private String getLcRoot() {
