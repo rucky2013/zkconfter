@@ -426,6 +426,14 @@ public class ZkConfter implements InitializingBean {
     }
 
     /**
+     * 获取所有从配置中心下载过来的配置信息
+     * @return
+     */
+    public static Properties config(){
+        return zkConfigProps;
+    }
+
+    /**
      * 获取drm对象，该对象在系统连接配置中心时创建，为本地单例的对象
      * @param clazz DRM对象类型
      * @param <T> DRM对象类型
@@ -433,6 +441,14 @@ public class ZkConfter implements InitializingBean {
      */
     public static <T> T drm(Class<T> clazz) {
         return (T) zkDrmMaps.get(clazz.getCanonicalName());
+    }
+
+    /**
+     * 获取所有drm对象
+     * @return
+     */
+    public static Map<String, Object> drm(){
+        return zkDrmMaps;
     }
 
 }
