@@ -232,7 +232,7 @@ public class ZkConfter implements InitializingBean {
      * 启动并同步动态资源(DRM)
      */
     public void drmZkConfter() throws IllegalAccessException, InstantiationException {
-        if (drmPackages == null && drmPackages.equals(""))
+        if (drmPackages == null || drmPackages.equals(""))
             return;
 
         // 获取包下的class类
