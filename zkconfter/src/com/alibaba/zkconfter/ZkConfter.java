@@ -97,7 +97,7 @@ public class ZkConfter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         this.init();
         this.syncZkConfter();
-        if (drm.equals("true")) {
+        if (drm.equals("true") && !drmPackages.equals("")) {
             this.drmZkConfter();
         }
     }
@@ -365,7 +365,7 @@ public class ZkConfter implements InitializingBean {
                 return appRoot;
         } else {
             //如果不是WEB系统，获取应用根目录
-            appRoot = System.getProperty("user.dir").replaceAll("\\\\","/") + "/";
+            appRoot = System.getProperty("user.dir").replaceAll("\\\\", "/") + "/";
             file = new File(appRoot + root);
             if (file.exists())
                 return appRoot;
