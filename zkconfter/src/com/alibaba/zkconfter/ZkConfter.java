@@ -97,7 +97,7 @@ public class ZkConfter implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         this.init();
         this.syncZkConfter();
-        if (drm.equals("true") && !drmPackages.equals("")) {
+        if (drm.equals("true")) {
             this.drmZkConfter();
         }
     }
@@ -232,6 +232,9 @@ public class ZkConfter implements InitializingBean {
      * 启动并同步动态资源(DRM)
      */
     public void drmZkConfter() throws IllegalAccessException, InstantiationException {
+        if (drmPackages == null && drmPackages.equals(""))
+            return;
+
         // 获取包下的class类
         String[] packages = drmPackages.split(",");
         Set<Class<?>> sets = new HashSet<Class<?>>();
