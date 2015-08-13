@@ -11,16 +11,17 @@ import java.util.List;
 
 public class Index implements Controller {
 
+    private ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response,
                         ModelView model) throws Exception {
 
-        ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
         ZkClient zkClient = zkConfter.getZkClient();
 
         StringBuilder sb = new StringBuilder();
         List<String> list = zkClient.getChildrenOfFullPathRecursive("/");
-        for(String s : list){
+        for (String s : list) {
             sb.append(s + "<br>");
         }
 

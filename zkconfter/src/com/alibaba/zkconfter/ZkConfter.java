@@ -17,10 +17,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -48,7 +45,8 @@ public class ZkConfter implements InitializingBean {
     private String drm;
     private String drmPackages;
 
-    private static Map<String, Object> zkDrmPool = new HashMap<String, Object>();
+    private static Properties zkConfigProps = new Properties();
+    private static Map<String, Object> zkDrmMaps = new HashMap<String, Object>();
 
     /**
      * 构造函数
@@ -96,7 +94,7 @@ public class ZkConfter implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         this.init();
-        if(!runtime.equals("dev")) {
+        if (!runtime.equals("dev")) {
             this.syncZkConfter();
             if (drm.equals("true")) {
                 this.drmZkConfter();
@@ -185,9 +183,11 @@ public class ZkConfter implements InitializingBean {
                 if (in != null)
                     in.close();
             }
-
             zkClient.writeData(zkPath, data, CreateMode.PERSISTENT);
             logger.info("上传文件:" + zkPath);
+
+            //载入到Properties
+            zkConfigProps.load(res.getInputStream());
         }
     }
 
@@ -209,12 +209,12 @@ public class ZkConfter implements InitializingBean {
                 continue;
             }
 
-            //下载配置文件
             String lcPath = this.getLcPathByZkPath(zkPath);
             File file = new File(lcPath);
             if (!file.exists())
                 file.createNewFile();
 
+            //下载配置文件
             FileOutputStream on = null;
             try {
                 on = new FileOutputStream(file);
@@ -225,8 +225,10 @@ public class ZkConfter implements InitializingBean {
                 if (on != null)
                     on.close();
             }
-
             logger.info("下载文件:" + zkPath);
+
+            //载入到Properties
+            zkConfigProps.load(new FileInputStream(file));
         }
     }
 
@@ -252,7 +254,6 @@ public class ZkConfter implements InitializingBean {
             if (drmResource != null) {
                 // 实例化
                 final Object inst = clazz.newInstance();
-                zkDrmPool.put(clazz.getCanonicalName(), inst);
 
                 // 创建类节点
                 String zkDrmResource = this.getZkDrmPath() + "/" + clazz.getCanonicalName();
@@ -325,6 +326,9 @@ public class ZkConfter implements InitializingBean {
                         zkClient.deleteRecursive(path);
                     }
                 }
+
+                // 载入到drm对象池
+                zkDrmMaps.put(clazz.getCanonicalName(), inst);
             }
         }
     }
@@ -411,15 +415,28 @@ public class ZkConfter implements InitializingBean {
         return getZkRoot() + lcPath.replaceFirst(getLcRoot(), "");
     }
 
+
     /**
-     * 获取DRM对象
+     * 获取从配置中心下载过来的配置值
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public static String config(String key) {
+        return zkConfigProps.getProperty(key);
+    }
+
+    /**
+     * 获取drm对象
+     * 该对象在系统连接配置中心时创建，为本地单例的对象
      *
      * @param clazz
      * @param <T>
      * @return
      */
     public static <T> T drm(Class<T> clazz) {
-        return (T) zkDrmPool.get(clazz.getCanonicalName());
+        return (T) zkDrmMaps.get(clazz.getCanonicalName());
     }
 
 }
