@@ -10,7 +10,7 @@ import com.alibaba.zkconfter.annotation.DRMResource;
 public class DRMResourceTest {
 
     @DRMAttribute
-    private String testString = "10";
+    private String testString = "10\n20";
 
     @DRMAttribute
     private int testInt = 20;

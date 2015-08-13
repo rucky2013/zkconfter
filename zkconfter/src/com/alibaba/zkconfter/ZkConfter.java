@@ -96,9 +96,11 @@ public class ZkConfter implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         this.init();
-        this.syncZkConfter();
-        if (drm.equals("true")) {
-            this.drmZkConfter();
+        if(!runtime.equals("dev")) {
+            this.syncZkConfter();
+            if (drm.equals("true")) {
+                this.drmZkConfter();
+            }
         }
     }
 
@@ -288,7 +290,6 @@ public class ZkConfter implements InitializingBean {
                             field.set(inst, dataAttribute.get("value"));
                             zkClient.writeData(zkDrmAttribute, dataAttribute.toString(), CreateMode.PERSISTENT);
                         }
-
 
                         // 监听动态资源(DRM)
                         zkClient.subscribeDataChanges(zkDrmAttribute, new IZkDataListener() {
