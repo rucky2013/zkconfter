@@ -418,22 +418,18 @@ public class ZkConfter implements InitializingBean {
 
     /**
      * 获取从配置中心下载过来的配置值
-     *
-     * @param key
-     * @param <T>
-     * @return
+     * @param key 配置文件的参数key
+     * @return 返回配置值，如果获取不到，返回空串
      */
     public static String config(String key) {
-        return zkConfigProps.getProperty(key);
+        return zkConfigProps.getProperty(key, "");
     }
 
     /**
-     * 获取drm对象
-     * 该对象在系统连接配置中心时创建，为本地单例的对象
-     *
-     * @param clazz
-     * @param <T>
-     * @return
+     * 获取drm对象，该对象在系统连接配置中心时创建，为本地单例的对象
+     * @param clazz DRM对象类型
+     * @param <T> DRM对象类型
+     * @return 返回drm对象的实例，如果获取不到，则返回空
      */
     public static <T> T drm(Class<T> clazz) {
         return (T) zkDrmMaps.get(clazz.getCanonicalName());
