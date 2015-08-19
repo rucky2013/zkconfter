@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.jsplite.mvc;
+package com.github.zookeeper.configcenter.ops.jsplite.mvc;
 
 import com.alibaba.fastjson.JSON;
 

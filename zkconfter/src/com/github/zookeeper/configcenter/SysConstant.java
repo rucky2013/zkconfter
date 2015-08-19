@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter;
+package com.github.zookeeper.configcenter;
 
 /**
  * Created by pinian.lpn on 2015/3/4.

@@ -1,7 +1,7 @@
 package com.alibaba.zkconfter.drm;
 
-import com.alibaba.zkconfter.annotation.DRMAttribute;
-import com.alibaba.zkconfter.annotation.DRMResource;
+import com.github.zookeeper.configcenter.annotation.DRMAttribute;
+import com.github.zookeeper.configcenter.annotation.DRMResource;
 
 /**
  * Created by pinian.lpn on 2015/8/10.

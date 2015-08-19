@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.config;
+package com.github.zookeeper.configcenter.config;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;

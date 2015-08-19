@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.util;
+package com.github.zookeeper.configcenter.util;
 
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;

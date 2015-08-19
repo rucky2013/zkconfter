@@ -1,4 +1,4 @@
-package com.alibaba.zkconfter.annotation;
+package com.github.zookeeper.configcenter.annotation;
 
 import java.lang.annotation.*;
 

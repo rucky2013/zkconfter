@@ -1,7 +1,7 @@
-package com.alibaba.zkconfter.jsplite;
+package com.github.zookeeper.configcenter.ops.jsplite;
 
-import com.alibaba.zkconfter.jsplite.mvc.Controller;
-import com.alibaba.zkconfter.jsplite.mvc.ModelView;
+import com.github.zookeeper.configcenter.ops.jsplite.mvc.Controller;
+import com.github.zookeeper.configcenter.ops.jsplite.mvc.ModelView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,6 +1,6 @@
-package com.alibaba.zkconfter.config;
+package com.github.zookeeper.configcenter.config;
 
-import com.alibaba.zkconfter.ZkConfter;
+import com.github.zookeeper.configcenter.ZkConfter;
 
 /**
  * 集成配置中心ZkConfter

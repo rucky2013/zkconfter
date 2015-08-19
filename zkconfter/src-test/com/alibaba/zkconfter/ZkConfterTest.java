@@ -3,7 +3,8 @@ package com.alibaba.zkconfter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.zkconfter.drm.DRMResourceTest;
-import com.alibaba.zkconfter.util.ZkClient;
+import com.github.zookeeper.configcenter.ZkConfter;
+import com.github.zookeeper.configcenter.util.ZkClient;
 import org.apache.zookeeper.CreateMode;
 import org.junit.Test;
 
