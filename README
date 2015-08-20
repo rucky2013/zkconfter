@@ -1,19 +1,20 @@
 用Zookeeper实现的配置中心。(注意，不是阿里巴巴的项目哦，只是因为作者是阿里的，所以习惯性的把包名取成alibaba而已！)
 Using Zookeeper to achieve the configuration center.
 
-    <!-- 引入配置中心 -->
-    <bean class="com.github.zookeeper.configcenter.config.ZkConfterPropertyPlaceholderConfigurer">
-        <property name="zkConfter">
-            <bean class="com.github.zookeeper.configcenter.ZkConfter">
-                <property name="config">
-                    <value>classpath:zkconfter.properties</value>
-                </property>
-            </bean>
-        </property>
-        <property name="locations">
-            <list>
-                <value>classpath:dubbo.properties</value>
-                <value>classpath:${zkconfter.runtime}/*.conf</value>
-            </list>
-        </property>
-    </bean>
+
+<!-- 引入配置中心 -->
+<bean class="com.github.zookeeper.configcenter.config.ZkConfterPropertyPlaceholderConfigurer">
+    <property name="zkConfter">
+        <bean class="com.github.zookeeper.configcenter.ZkConfter">
+            <property name="config">
+                <value>classpath:zkconfter.properties</value>
+            </property>
+        </bean>
+    </property>
+    <property name="locations">
+        <list>
+            <value>classpath:dubbo.properties</value>
+            <value>classpath:${zkconfter.runtime}/*.conf</value>
+        </list>
+    </property>
+</bean>
