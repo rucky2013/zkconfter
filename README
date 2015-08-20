@@ -2,7 +2,7 @@
 Using Zookeeper to achieve the configuration center.
 
 
-在spring.xml中加入：
+在 spring.xml 中加入：
 
 <!-- 引入配置中心 -->
 <bean class="com.github.zookeeper.configcenter.config.ZkConfterPropertyPlaceholderConfigurer">
