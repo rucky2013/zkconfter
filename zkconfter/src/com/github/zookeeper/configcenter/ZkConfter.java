@@ -376,7 +376,7 @@ public class ZkConfter implements InitializingBean {
         File file;
 
         //classpath目录
-        String classpath = ZkConfter.class.getResource("/").toString().replaceFirst("file:/", "");
+        String classpath = ZkConfter.class.getResource("/").toString().replaceFirst("file:", "");
         appRoot = classpath;
         file = new File(appRoot + root);
         if (file.exists())
