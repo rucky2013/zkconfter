@@ -180,6 +180,8 @@ public class ZkConfter implements InitializingBean {
      * @throws IOException
      */
     public void uploadZkConfter() throws IOException {
+        logger.info("开始向ZkConfter配置中心上传文件...");
+
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("file:/" + this.getLcPath() + "/**");
         List<Resource> resList = Arrays.asList(resources);
@@ -216,6 +218,8 @@ public class ZkConfter implements InitializingBean {
      * @throws IOException
      */
     public void downloadZkConfter() throws IOException {
+        logger.info("开始从ZkConfter配置中心下载文件...");
+
         //从配置中心下载文件
         List<String> zkPathList = zkClient.getChildrenOfFullPathRecursive(this.getZkPath());
         for (Iterator<String> it = zkPathList.iterator(); it.hasNext(); ) {
