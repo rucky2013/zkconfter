@@ -99,6 +99,12 @@ public class ZkConfter implements InitializingBean {
             if (drm.equals("true")) {
                 this.drmZkConfter();
             }
+        } else {
+            //载入到Properties
+            Resource[] resources = new PathMatchingResourcePatternResolver().getResources("file:/" + this.getLcPath() + "/**");
+            for (Resource res : resources) {
+                zkConfigProps.load(res.getInputStream());
+            }
         }
     }
 
@@ -184,11 +190,9 @@ public class ZkConfter implements InitializingBean {
 
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         Resource[] resources = resolver.getResources("file:/" + this.getLcPath() + "/**");
-        List<Resource> resList = Arrays.asList(resources);
 
         //上传文件到配置中心
-        for (Iterator<Resource> it = resList.iterator(); it.hasNext(); ) {
-            Resource res = it.next();
+        for (Resource res : resources) {
             String lcPath = ((FileSystemResource) res).getPath();
             String zkPath = this.getZkPathByLcPath(lcPath);
 
@@ -441,6 +445,7 @@ public class ZkConfter implements InitializingBean {
 
     /**
      * 获取从配置中心下载过来的配置值
+     *
      * @param key 配置文件的参数key
      * @return 返回配置值，如果获取不到，返回空串
      */
@@ -450,16 +455,18 @@ public class ZkConfter implements InitializingBean {
 
     /**
      * 获取所有从配置中心下载过来的配置信息
+     *
      * @return
      */
-    public static Properties config(){
+    public static Properties config() {
         return zkConfigProps;
     }
 
     /**
      * 获取drm对象，该对象在系统连接配置中心时创建，为本地单例的对象
+     *
      * @param clazz DRM对象类型
-     * @param <T> DRM对象类型
+     * @param <T>   DRM对象类型
      * @return 返回drm对象的实例，如果获取不到，则返回空
      */
     public static <T> T drm(Class<T> clazz) {
@@ -468,9 +475,10 @@ public class ZkConfter implements InitializingBean {
 
     /**
      * 获取所有drm对象
+     *
      * @return
      */
-    public static Map<String, Object> drm(){
+    public static Map<String, Object> drm() {
         return zkDrmMaps;
     }
 
