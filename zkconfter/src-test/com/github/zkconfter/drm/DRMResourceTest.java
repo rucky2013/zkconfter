@@ -1,4 +1,4 @@
-package com.github.zookeeper.configcenter.drm;
+package com.github.zkconfter.drm;
 
 import com.github.zkconfter.annotation.DRMAttribute;
 import com.github.zkconfter.annotation.DRMResource;
