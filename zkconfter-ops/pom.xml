@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.zookeeper.configcenter</groupId>
+    <groupId>com.github</groupId>
     <artifactId>zkconfter-ops</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
@@ -23,6 +23,10 @@
         <repository>
             <id>zkconfter-mvn-github</id>
             <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
+        </repository>
+        <repository>
+            <id>jspliter-mvn-github</id>
+            <url>https://raw.githubusercontent.com/lpn520/jspliter/master/mvn-repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -79,7 +83,7 @@
     <!-- 包依赖 -->
     <dependencies>
         <dependency>
-            <groupId>com.github.zookeeper.configcenter</groupId>
+            <groupId>com.github</groupId>
             <artifactId>zkconfter</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -97,6 +101,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github</groupId>
+            <artifactId>jspliter</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>

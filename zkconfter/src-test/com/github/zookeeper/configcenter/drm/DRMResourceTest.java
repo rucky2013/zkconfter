@@ -1,7 +1,7 @@
 package com.github.zookeeper.configcenter.drm;
 
-import com.github.zookeeper.configcenter.annotation.DRMAttribute;
-import com.github.zookeeper.configcenter.annotation.DRMResource;
+import com.github.zkconfter.annotation.DRMAttribute;
+import com.github.zkconfter.annotation.DRMResource;
 
 /**
  * Created by pinian.lpn on 2015/8/10.

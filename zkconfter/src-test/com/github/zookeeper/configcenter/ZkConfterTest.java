@@ -2,8 +2,9 @@ package com.github.zookeeper.configcenter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.zkconfter.ZkConfter;
 import com.github.zookeeper.configcenter.drm.DRMResourceTest;
-import com.github.zookeeper.configcenter.util.ZkClient;
+import com.github.zkconfter.util.ZkClient;
 import org.apache.zookeeper.CreateMode;
 import org.junit.Test;
 
