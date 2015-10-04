@@ -25,8 +25,8 @@
             <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
         </repository>
         <repository>
-            <id>jspliter-mvn-github</id>
-            <url>https://raw.githubusercontent.com/lpn520/jspliter/master/mvn-repository</url>
+            <id>jsplite-mvn-github</id>
+            <url>https://raw.githubusercontent.com/lpn520/jsplite/master/mvn-repository</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -104,7 +104,7 @@
         </dependency>
         <dependency>
             <groupId>com.github</groupId>
-            <artifactId>jspliter</artifactId>
+            <artifactId>jsplite</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>
