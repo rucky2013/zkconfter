@@ -2,12 +2,12 @@
 Using Zookeeper to achieve the configuration center.
 
 
-在 spring.xml 中加入：
+在 spring.xml 中加入:
 
 <!-- 引入配置中心 -->
-<bean class="com.github.zookeeper.configcenter.config.ZkConfterPropertyPlaceholderConfigurer">
+<bean class="com.github.zkconfter.config.ZkConfterPropertyPlaceholderConfigurer">
     <property name="zkConfter">
-        <bean class="com.github.zookeeper.configcenter.ZkConfter">
+        <bean class="com.github.zkconfter.ZkConfter">
             <property name="config">
                 <value>classpath:zkconfter.properties</value>
             </property>
@@ -15,8 +15,25 @@ Using Zookeeper to achieve the configuration center.
     </property>
     <property name="locations">
         <list>
-            <value>classpath:dubbo.properties</value>
             <value>classpath:${zkconfter.runtime}/*.conf</value>
         </list>
     </property>
 </bean>
+
+
+在 pom.xml 中加入:
+
+<repositories>
+    <repository>
+        <id>zkconfter-mvn-github</id>
+        <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github</groupId>
+        <artifactId>zkconfter</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
