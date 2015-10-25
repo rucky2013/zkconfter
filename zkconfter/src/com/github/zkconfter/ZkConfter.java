@@ -153,9 +153,6 @@ public class ZkConfter implements InitializingBean {
             throw new NullPointerException("Property zkconfter.zkServers cannot be null.");
         if (appName.equals(""))
             throw new NullPointerException("Property zkconfter.appName cannot be null.");
-
-        //创建ZkClient对象
-        zkClient = new ZkClient(zkServers);
     }
 
     /**
@@ -164,6 +161,9 @@ public class ZkConfter implements InitializingBean {
      * @throws IOException
      */
     public void syncZkConfter() throws IOException {
+        //创建ZkClient对象
+        zkClient = new ZkClient(zkServers);
+
         //创建配置中心根目录
         String zkPath = this.getZkPath();
         if (!zkClient.exists(zkPath)) {
