@@ -7,6 +7,7 @@
 <html>
 <head>
   <title>ZkConfter OPS</title>
+  <%@ include file="WEB-INF/include/meta.jsp" %>
 </head>
 <body>
 ${hello}
