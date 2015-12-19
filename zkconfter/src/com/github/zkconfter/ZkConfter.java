@@ -7,7 +7,8 @@ import com.github.zkconfter.annotation.DRMResource;
 import com.github.zkconfter.util.BeanUtils;
 import com.github.zkconfter.util.ZkClient;
 import org.I0Itec.zkclient.IZkDataListener;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ClassPathResource;
@@ -29,8 +30,7 @@ import java.util.*;
  */
 public class ZkConfter implements InitializingBean {
 
-    private final static Logger logger = Logger.getLogger(ZkConfter.class);
-
+    protected final static Log logger = LogFactory.getLog(ZkConfter.class);
     private final static String DEFAULT_ZKCONFTER_FILE = "zkconfter.properties";
     private final static String ZK_ROOT = "/zkconfter/";
 

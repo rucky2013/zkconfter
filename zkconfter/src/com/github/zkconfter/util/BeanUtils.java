@@ -4,7 +4,8 @@
  */
 package com.github.zkconfter.util;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -25,7 +26,7 @@ import java.util.jar.JarFile;
  */
 public class BeanUtils {
 
-    private final static Logger logger = Logger.getLogger(BeanUtils.class);
+    protected final static Log logger = LogFactory.getLog(BeanUtils.class);
 
     /**
      * Bean复制工具,bean的字段名相同会被复制，其它会被忽略
