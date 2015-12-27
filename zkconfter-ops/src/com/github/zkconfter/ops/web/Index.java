@@ -1,12 +1,12 @@
 package com.github.zkconfter.ops.web;
 
+import com.github.jsplite.http.JspliteHttpRequest;
+import com.github.jsplite.http.JspliteHttpResponse;
 import com.github.jsplite.mvc.Controller;
 import com.github.jsplite.mvc.ModelView;
 import com.github.zkconfter.ZkConfter;
 import com.github.zkconfter.util.ZkClient;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class Index implements Controller {
@@ -14,7 +14,7 @@ public class Index implements Controller {
     private ZkConfter zkConfter = new ZkConfter("zkconfter.properties");
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response,
+    public void execute(JspliteHttpRequest request, JspliteHttpResponse response,
                         ModelView model) throws Exception {
 
         ZkClient zkClient = zkConfter.getZkClient();
