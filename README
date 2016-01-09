@@ -1,5 +1,5 @@
-用Zookeeper实现的配置中心。
-Using Zookeeper to achieve the configuration center.
+用Zookeeper实现的配置中心，支持动态资源管控(DRM)。
+Using Zookeeper to achieve the configuration center, support dynamic resource management.
 
 
 在 spring.xml 中加入:
