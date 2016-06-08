@@ -7,9 +7,9 @@
 
     <!-- 项目父pom.xml -->
     <parent>
-        <groupId>com.alibaba</groupId>
-        <artifactId>dubbo-project</artifactId>
-        <version>2.4.12</version>
+        <groupId>com.github</groupId>
+        <artifactId>zkconfter-project</artifactId>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
