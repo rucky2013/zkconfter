@@ -6,41 +6,13 @@
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <url>https://github.com/lpn520/zkconfter.git</url>
-    <developers>
-        <developer>
-            <name>Linpn</name>
-            <email>lpn520@gmail.com</email>
-        </developer>
-    </developers>
-
-    <!-- 仓库 -->
-    <repositories>
-        <repository>
-            <id>oschina-mvn-repository</id>
-            <url>http://maven.oschina.net/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>zkconfter-mvn-github</id>
-            <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
-        </repository>
-        <repository>
-            <id>jsplite-mvn-github</id>
-            <url>https://raw.githubusercontent.com/lpn520/jsplite/master/mvn-repository</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>oschina-plugin-repository</id>
-            <url>http://maven.oschina.net/content/groups/public</url>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
+    <!-- 项目pom.xml -->
+    <parent>
+        <groupId>com.alibaba</groupId>
+        <artifactId>dubbo-project</artifactId>
+        <version>2.4.12</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
     <!-- 构建 -->
     <build>
