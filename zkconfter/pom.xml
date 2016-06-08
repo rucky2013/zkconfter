@@ -5,7 +5,7 @@
     <artifactId>zkconfter</artifactId>
     <version>1.0.0</version>
 
-    <!-- 项目pom.xml -->
+    <!-- 项目父pom.xml -->
     <parent>
         <groupId>com.alibaba</groupId>
         <artifactId>dubbo-project</artifactId>
