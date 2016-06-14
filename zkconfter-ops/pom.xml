@@ -6,14 +6,6 @@
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <!-- 项目父pom.xml -->
-    <parent>
-        <groupId>com.github</groupId>
-        <artifactId>zkconfter-project</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
     <!-- 构建 -->
     <build>
         <finalName>zkconfter</finalName>
@@ -81,4 +73,32 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <!-- 仓库 -->
+    <repositories>
+        <repository>
+            <id>oschina-mvn-repository</id>
+            <url>http://maven.oschina.net/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>zkconfter-mvn-github</id>
+            <url>https://raw.githubusercontent.com/lpn520/zkconfter/master/mvn-repository</url>
+        </repository>
+        <repository>
+            <id>jsplite-mvn-github</id>
+            <url>https://raw.githubusercontent.com/lpn520/jsplite/master/mvn-repository</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>oschina-plugin-repository</id>
+            <url>http://maven.oschina.net/content/groups/public</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
