@@ -16,7 +16,7 @@ Using Zookeeper to achieve the configuration center.Can be managed online and pu
     </property>
     <property name="locations">
         <list>
-            <value>classpath:${zkconfter.runtime}/*.conf</value>
+            <value>classpath:{zkconfter.runtime}/*.conf</value>
         </list>
     </property>
 </bean>

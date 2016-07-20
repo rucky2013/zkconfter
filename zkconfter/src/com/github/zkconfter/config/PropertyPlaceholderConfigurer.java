@@ -13,7 +13,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Spring导入properties文件，允许动态配置你要导入哪个目录下的配置文件。
+ * Spring导入properties文件, 允许动态配置你要导入哪个目录下的配置文件
+ *
+ * 属性locations中, 要获取zkconfter.properties的属性, 请用{}, 如: {zkconfter.runtime}
  *
  * @author Linpn
  */
@@ -37,7 +39,7 @@ public class PropertyPlaceholderConfigurer extends
 
         Properties propsConf = new Properties();
         propsConf.load(config.getInputStream());
-        String regex = "\\$\\{(.+)\\}";
+        String regex = "\\{(.+)\\}";
 
         for (String location : locations) {
             Pattern p = Pattern.compile(regex);
