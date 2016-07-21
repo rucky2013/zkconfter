@@ -34,6 +34,9 @@ public class PropertyPlaceholderConfigurer extends
         if (locations == null)
             return;
 
+        super.setIgnoreUnresolvablePlaceholders(true);
+        super.setIgnoreResourceNotFound(true);
+
         List<Resource> resources = new LinkedList<Resource>();
         resources.add(config);
 
